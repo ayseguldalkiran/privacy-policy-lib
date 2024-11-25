@@ -5,8 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.privacy_policy_lib.PrivacyPolicyDialogFragment
-import com.example.privacy_policy_lib.core.utils.PreferencesHelper
+import com.example.privacy_policy_lib.ContractsFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,14 +18,14 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        //showPrivacyPolicyIfNotReadBefore()
+        openFragment()
     }
 
-    private fun showPrivacyPolicyIfNotReadBefore() {
-        if (!PreferencesHelper.isPrivacyPolicyRead()) {
-            val f = PrivacyPolicyDialogFragment()
-            f.isCancelable = false
-            f.show(supportFragmentManager, "PrivacyFragment")
-        }
+    private fun openFragment() {
+        val fragment = ContractsFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 }

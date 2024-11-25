@@ -63,7 +63,7 @@ publishing {
         maven(MavenPublication) {
             groupId "com.github.ayseguldalkiran"
             artifactId "PrivacyPoliciy"
-            version "2.0"
+            version "3.0"
             afterEvaluate {
                 from components.release
             }
@@ -71,5 +71,8 @@ publishing {
                 description = 'PrivacyPoliciy'
             }
         }
+    }
+    repositories {
+        mavenLocal()
     }
 }

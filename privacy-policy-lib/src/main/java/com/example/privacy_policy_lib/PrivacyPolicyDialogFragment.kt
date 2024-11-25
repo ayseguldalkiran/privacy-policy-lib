@@ -20,36 +20,40 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.webkit.WebViewAssetLoader
+import com.example.privacy_policy_lib.adapter.ContractsAdapter
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
 import com.example.privacy_policy_lib.databinding.FragmentPrivacyPolicyDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.privacy_policy_lib.core.extensions.setBottomSheetHeight
+import com.example.privacy_policy_lib.core.model.ContractItem
 
 class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentPrivacyPolicyDialogBinding? = null
     private val binding get() = _binding!!
+    private var mAdapter: ContractsAdapter? = null
+    val contractItemList = arrayListOf(
+        ContractItem("Gizlilik Politikası"),
+        ContractItem("Aydınlatma Metni"),
+        ContractItem("Ticari Elektronik İleti metni")
+    )
     var mPrivacyPolicyUrl: String? = null
     var mPrivacyPolicyFile: String? = null
 
     companion object {
-        lateinit var mContext: Context
-
-        @JvmStatic
-        fun init(context: Context) {
-            mContext = context
-        }
-    }
-
-/*    companion object {
         fun newInstance(privacyPolicyUrl: String, privacyPolicyFile: String): PrivacyPolicyDialogFragment {
             val fragment = PrivacyPolicyDialogFragment()
             fragment.mPrivacyPolicyUrl = privacyPolicyUrl
             fragment.mPrivacyPolicyFile = privacyPolicyFile
             return fragment
         }
-    }*/
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mAdapter = ContractsAdapter(requireActivity())
+        mAdapter!!.addItem(contractItemList)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,20 +66,16 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
     override fun onStart() {
         super.onStart()
         binding.btnRead.setOnClickListener {
+            PreferencesHelper.init(requireContext())
             PreferencesHelper.markPrivacyPolicyAsRead()
             dismiss()
         }
         keepFullScreen()
     }
 
-    fun setPrivacyPolicyUrl(url: String): PrivacyPolicyDialogFragment {
-        this.mPrivacyPolicyUrl = url
-        return this
-    }
-
-    fun setPrivacyPolicyFile(url: String): PrivacyPolicyDialogFragment {
-        this.mPrivacyPolicyFile = url
-        return this
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -157,7 +157,7 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun loadPrivacyPolicyFromLocal() {
-        val assetLoader = mContext.let {  WebViewAssetLoader.AssetsPathHandler(it) }.let {
+        val assetLoader = requireActivity().let {  WebViewAssetLoader.AssetsPathHandler(it) }.let {
             WebViewAssetLoader.Builder()
                 .addPathHandler("/assets/", it)
                 .build()

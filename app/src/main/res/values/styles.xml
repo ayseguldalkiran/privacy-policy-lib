@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="LogoAppToolBar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="searchViewStyle">@style/AppToolbarSearchView</item>
+        <item name="android:textColorPrimary">?attr/themedTextColorPrimary</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppToolbarSearchView" parent="Widget.AppCompat.SearchView.ActionBar">
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+
+</resources>
