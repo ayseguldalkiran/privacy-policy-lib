@@ -10,18 +10,24 @@
         android:id="@+id/webView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btnRead">
+
+        <include
+            android:id="@+id/llProgressBar"
+            android:visibility="gone"
+            layout="@layout/loading_item"/>
+
     </WebView>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnRead"
         android:layout_width="280dp"
         android:layout_height="48dp"
-        android:layout_marginVertical="8dp"
+
         android:background="@color/colorPrimary"
         android:text="@string/str_ok"
         android:textColor="@color/white"
@@ -30,10 +36,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <include
-        android:id="@+id/llProgressBar"
-        android:visibility="gone"
-        layout="@layout/loading_item"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

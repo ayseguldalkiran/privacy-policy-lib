@@ -4,13 +4,15 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class ContractItem(
-    var contractItemText: String = ""
+    var contractItemText: String = "",
+    var contractItemContent: String = ""
 ): Parcelable {
     constructor(parcel: Parcel) : this(parcel.readString().toString()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(contractItemText)
+        parcel.writeString(contractItemContent)
     }
 
     override fun describeContents(): Int {

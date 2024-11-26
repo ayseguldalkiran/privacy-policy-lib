@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">Sözleşmeler</string>
-    <string name="str_read">Okudum</string>
-    <string name="str_please_wait">Lütfen Bekleyiniz…</string>
 </resources>

@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">PrivacyPolicy</string>
-    <string name="str_read">Okudum</string>
     <string name="str_ok">Tamam</string>
-    <string name="str_please_wait">Lütfen Bekleyiniz...</string>
-    <string name="str_explanation" >Gizliliğiniz ve haklarınız bizim için önemlidir.Hizmetlerimizi kullanmadan önce, lütfen tüm söleşmeleri dikkatlice okuyun ve onaylayın. Sözleşmeleri okuyup onaylayarak hizmetlerimizi güvenle kullanmaya başlayabilirsiniz.</string>
+    <string name="str_please_wait">Lütfen Bekleyiniz…</string>
+    <string name="str_explanation">Gizliliğiniz ve haklarınız bizim için önemlidir.Hizmetlerimizi kullanmadan önce, lütfen tüm söleşmeleri dikkatlice okuyun ve onaylayın. Sözleşmeleri okuyup onaylayarak hizmetlerimizi güvenle kullanmaya başlayabilirsiniz.</string>
+    <string name="str_approve">okudum, onaylıyorum</string>
 </resources>

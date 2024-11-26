@@ -1,8 +1,6 @@
 package com.example.privacy_policy_lib
 
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Bundle
@@ -11,24 +9,21 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.webkit.SslErrorHandler
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import androidx.webkit.WebViewAssetLoader
 import com.example.privacy_policy_lib.adapter.ContractsAdapter
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
 import com.example.privacy_policy_lib.databinding.FragmentPrivacyPolicyDialogBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.example.privacy_policy_lib.core.extensions.setBottomSheetHeight
 import com.example.privacy_policy_lib.core.model.ContractItem
+import com.example.privacy_policy_lib.core.utils.ContextUtils
 
-class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
+class PrivacyPolicyDialogFragment : Fragment() {
     private var _binding: FragmentPrivacyPolicyDialogBinding? = null
     private val binding get() = _binding!!
     private var mAdapter: ContractsAdapter? = null
@@ -51,6 +46,7 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context?.let { ContextUtils.setmContext(it) }
         mAdapter = ContractsAdapter(requireActivity())
         mAdapter!!.addItem(contractItemList)
     }
@@ -66,32 +62,15 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
     override fun onStart() {
         super.onStart()
         binding.btnRead.setOnClickListener {
-            PreferencesHelper.init(requireContext())
+            ContextUtils.getmContext()?.let { it1 -> PreferencesHelper.init(it1) }
             PreferencesHelper.markPrivacyPolicyAsRead()
-            dismiss()
+            activity?.supportFragmentManager?.popBackStack()
         }
-        keepFullScreen()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        keepFullScreen()
-    }
-
-    private fun keepFullScreen(){
-        val bottomSheet = requireView().parent as FrameLayout
-        val behavior = BottomSheetBehavior.from(requireView().parent as View)
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        behavior.isDraggable = false
-        behavior.skipCollapsed = true
-        behavior.isHideable = false
-        val wm = requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        bottomSheet.setBottomSheetHeight(behavior, 0.8,wm)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -157,7 +136,7 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun loadPrivacyPolicyFromLocal() {
-        val assetLoader = requireActivity().let {  WebViewAssetLoader.AssetsPathHandler(it) }.let {
+        val assetLoader = ContextUtils.getmContext()?.let { WebViewAssetLoader.AssetsPathHandler(it) }?.let {
             WebViewAssetLoader.Builder()
                 .addPathHandler("/assets/", it)
                 .build()
@@ -165,7 +144,7 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
 
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
-                return assetLoader.shouldInterceptRequest(request.url)
+                return assetLoader?.shouldInterceptRequest(request.url)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {

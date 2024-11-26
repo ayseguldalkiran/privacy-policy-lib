@@ -12,8 +12,7 @@
         <CheckBox
             android:id="@+id/chk_contract"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textStyle="bold" />
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/txt_contract"
@@ -21,8 +20,7 @@
             android:layout_height="match_parent"
             android:text="Aydınlatma metnini okudum, onaylıyorum"
             tools:text="Aydınlatma metnini okudum, onaylıyorum"
-            android:gravity="center_vertical"
-            android:paddingStart="4dp" />
+            android:gravity="center_vertical" />
 
     </LinearLayout>
 </LinearLayout>
