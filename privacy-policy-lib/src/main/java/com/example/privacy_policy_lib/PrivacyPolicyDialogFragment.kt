@@ -17,21 +17,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.webkit.WebViewAssetLoader
-import com.example.privacy_policy_lib.adapter.ContractsAdapter
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
 import com.example.privacy_policy_lib.databinding.FragmentPrivacyPolicyDialogBinding
-import com.example.privacy_policy_lib.core.model.ContractItem
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 
 class PrivacyPolicyDialogFragment : Fragment() {
     private var _binding: FragmentPrivacyPolicyDialogBinding? = null
     private val binding get() = _binding!!
-    private var mAdapter: ContractsAdapter? = null
-    val contractItemList = arrayListOf(
-        ContractItem("Gizlilik Politikası"),
-        ContractItem("Aydınlatma Metni"),
-        ContractItem("Ticari Elektronik İleti metni")
-    )
     var mPrivacyPolicyUrl: String? = null
     var mPrivacyPolicyFile: String? = null
 
@@ -47,8 +39,6 @@ class PrivacyPolicyDialogFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let { ContextUtils.setmContext(it) }
-        mAdapter = ContractsAdapter(requireActivity())
-        mAdapter!!.addItem(contractItemList)
     }
 
     override fun onCreateView(
