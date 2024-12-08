@@ -18,9 +18,9 @@ class ContractsFragment: Fragment() {
     private val binding get() = _binding!!
     private var mAdapter: ContractsAdapter? = null
     val contractItemList = arrayListOf(
-        ContractItem("Gizlilik Politikası","file:///android_asset/privacypolicy/privacy_policy_tr.html"),
-        ContractItem("Aydınlatma Metni", "file:///android_asset/privacypolicy/privacy_policy_en.html"),
-        ContractItem("Ticari Elektronik İleti metni", "file:///android_asset/privacypolicy/privacy_policy_ar.html")
+        ContractItem("Gizlilik Politikası"),
+        ContractItem("Aydınlatma Metni"),
+        ContractItem("Ticari Elektronik İleti metni")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

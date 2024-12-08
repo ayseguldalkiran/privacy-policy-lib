@@ -42,7 +42,7 @@ class ContractsAdapter(
         holder.bind(contractItem)
         holder.txtContract.setOnClickListener {
             val fragment = PrivacyPolicyDialogFragment.newInstance(
-                "https://www.logo.com.tr/logo-gizlilik-politikalari/mobilesales",
+                contractItem.contractItemText,
                 contractItem.contractItemContent
             )
             (mContext as FragmentActivity).supportFragmentManager.beginTransaction()
