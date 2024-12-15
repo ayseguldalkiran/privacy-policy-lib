@@ -68,13 +68,13 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId "com.github.ayseguldalkiran"
-            artifactId "PrivacyPoliciy"
+            artifactId "privacy-policy-lib"
             version "7.0"
             afterEvaluate {
                 from components.release
             }
             pom {
-                description = 'PrivacyPoliciy'
+                description = 'privacy-policy-lib'
             }
         }
     }
