@@ -69,7 +69,7 @@ publishing {
         maven(MavenPublication) {
             groupId "com.github.ayseguldalkiran"
             artifactId "privacy-policy-lib"
-            version "7.0"
+            version "8.0"
             afterEvaluate {
                 from components.release
             }
