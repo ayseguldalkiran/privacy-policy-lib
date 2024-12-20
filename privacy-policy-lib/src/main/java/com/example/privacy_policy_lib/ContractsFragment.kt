@@ -9,8 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.privacy_policy_lib.adapter.ContractsAdapter
 import com.example.privacy_policy_lib.core.model.ContractItem
+import com.example.privacy_policy_lib.core.service.callSoapWebService
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.databinding.FragmentContractsBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class ContractsFragment: Fragment() {
@@ -53,4 +57,13 @@ class ContractsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     }
 
+    fun makeSoapRequest() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                callSoapWebService()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 }
