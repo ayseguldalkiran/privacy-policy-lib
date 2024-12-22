@@ -45,6 +45,7 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
 */
 
     companion object {
+        @JvmStatic
         fun newInstance(context: Context, privacyPolicyUrl: String, privacyPolicyFile: String): PrivacyPolicyDialogFragment {
             val fragment = PrivacyPolicyDialogFragment()
             fragment.mContext = context
