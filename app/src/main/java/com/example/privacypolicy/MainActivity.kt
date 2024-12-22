@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPrivacyPolicyIfNotReadBefore() {
         if (!PreferencesHelper.isPrivacyPolicyRead()) {
-            val f = PrivacyPolicyDialogFragment()
+            val f = PrivacyPolicyDialogFragment.newInstance(this, "privacyPolicyUrl", "privacyPolicyFile")
             f.isCancelable = false
             f.show(supportFragmentManager, "PrivacyFragment")
         }

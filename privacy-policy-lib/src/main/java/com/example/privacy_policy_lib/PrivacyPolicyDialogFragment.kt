@@ -31,7 +31,9 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
     var mPrivacyPolicyUrl: String? = null
     var mPrivacyPolicyFile: String? = null
+    var mContext: Context? = null
 
+/*
     companion object {
         lateinit var mContext: Context
 
@@ -40,15 +42,17 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
             mContext = context
         }
     }
+*/
 
-/*    companion object {
-        fun newInstance(privacyPolicyUrl: String, privacyPolicyFile: String): PrivacyPolicyDialogFragment {
+    companion object {
+        fun newInstance(context: Context, privacyPolicyUrl: String, privacyPolicyFile: String): PrivacyPolicyDialogFragment {
             val fragment = PrivacyPolicyDialogFragment()
+            fragment.mContext = context
             fragment.mPrivacyPolicyUrl = privacyPolicyUrl
             fragment.mPrivacyPolicyFile = privacyPolicyFile
             return fragment
         }
-    }*/
+    }
 
 
     override fun onCreateView(
@@ -157,15 +161,15 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun loadPrivacyPolicyFromLocal() {
-        val assetLoader = mContext.let {  WebViewAssetLoader.AssetsPathHandler(it) }.let {
+        val assetLoader = mContext?.let { context ->
             WebViewAssetLoader.Builder()
-                .addPathHandler("/assets/", it)
+                .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
                 .build()
         }
 
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
-                return assetLoader.shouldInterceptRequest(request.url)
+                return assetLoader?.shouldInterceptRequest(request.url)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -183,4 +187,5 @@ class PrivacyPolicyDialogFragment : BottomSheetDialogFragment() {
             binding.btnRead.visibility = View.VISIBLE
         }, 1000)
     }
+
 }
