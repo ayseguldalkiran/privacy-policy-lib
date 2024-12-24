@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -18,10 +19,12 @@ import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.databinding.ContractItemBinding
 
 class ContractsAdapter(
-    var mContext: FragmentActivity? = null
+    var mContext: FragmentActivity? = null,
+    private val listener: OnAllCheckboxCheckedListener
 ) : RecyclerView.Adapter<ContractsAdapter.ViewHolder>() {
     private val mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
     private val contractsList: MutableList<ContractItem> = ArrayList()
+    private var checkboxStates = BooleanArray(0)
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -50,18 +53,24 @@ class ContractsAdapter(
                 .addToBackStack(null)
                 .commit()
         }
+        holder.chkBoxContract.setOnCheckedChangeListener { _, isChecked ->
+            checkboxStates[position] = isChecked
+            listener.onAllCheckboxChecked(checkboxStates.all { it })
+        }
     }
 
     fun addItem(items: ArrayList<ContractItem>?) {
         if (items != null) {
             contractsList.clear()
             contractsList.addAll(items)
+            checkboxStates = BooleanArray(items.size) { false }
             notifyDataSetChanged()
         }
     }
 
     inner class ViewHolder(binding: ContractItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val txtContract : TextView = binding.txtContract
+        val chkBoxContract : CheckBox = binding.chkContract
         fun bind(contractItem: ContractItem) {
             val firstString =  contractItem.contractItemText
             val secondString = ContextUtils.getStringResource(R.string.str_approve)
@@ -83,5 +92,9 @@ class ContractsAdapter(
 
             txtContract.text = spannable
         }
+    }
+
+    interface OnAllCheckboxCheckedListener {
+        fun onAllCheckboxChecked(isChecked: Boolean)
     }
 }
