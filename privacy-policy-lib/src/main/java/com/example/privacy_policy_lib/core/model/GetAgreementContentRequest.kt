@@ -26,7 +26,7 @@ data class Envelope(
 data class Body(
     @field:Element(name = "GetAgreementContent")
     @param:Element(name = "GetAgreementContent")
-    @field:Namespace(reference = "$HTTP$BASE_NAMESPACE_PRODUCTION2$NAMESPACE_END")
+    @field:Namespace(reference = "$HTTP$BASE_NAMESPACE_PRODUCTION$NAMESPACE_END")
     var getAgreementContent: GetAgreementContent
 )
 
