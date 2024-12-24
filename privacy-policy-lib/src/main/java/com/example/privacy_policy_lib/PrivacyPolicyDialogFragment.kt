@@ -1,7 +1,5 @@
 package com.example.privacy_policy_lib
 
-import android.content.Intent
-import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Bundle
 import android.os.Handler
@@ -16,34 +14,50 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.webkit.WebViewAssetLoader
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
 import com.example.privacy_policy_lib.databinding.FragmentPrivacyPolicyDialogBinding
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 
 class PrivacyPolicyDialogFragment : Fragment() {
+
     private var _binding: FragmentPrivacyPolicyDialogBinding? = null
     private val binding get() = _binding!!
-    var mPrivacyPolicyUrl: String? = null
-    var mPrivacyPolicyFile: String? = null
+    private val viewModel: PrivacyPolicyViewModel by viewModels()
+
+    private var mPrivacyPolicyUrl: String? = null
+    private var mPrivacyPolicyFile: String? = null
 
     companion object {
-        fun newInstance(privacyPolicyUrl: String, privacyPolicyFile: String): PrivacyPolicyDialogFragment {
-            val fragment = PrivacyPolicyDialogFragment()
-            fragment.mPrivacyPolicyUrl = privacyPolicyUrl
-            fragment.mPrivacyPolicyFile = privacyPolicyFile
-            return fragment
+        private const val ARG_URL = "privacy_policy_url"
+        private const val ARG_FILE = "privacy_policy_file"
+
+        fun newInstance(
+            privacyPolicyUrl: String,
+            privacyPolicyFile: String
+        ): PrivacyPolicyDialogFragment {
+            return PrivacyPolicyDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_URL, privacyPolicyUrl)
+                    putString(ARG_FILE, privacyPolicyFile)
+                }
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            mPrivacyPolicyUrl = it.getString(ARG_URL)
+            mPrivacyPolicyFile = it.getString(ARG_FILE)
+        }
         context?.let { ContextUtils.setmContext(it) }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPrivacyPolicyDialogBinding.inflate(inflater, container, false)
         return binding.root
@@ -52,7 +66,7 @@ class PrivacyPolicyDialogFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         binding.btnRead.setOnClickListener {
-            ContextUtils.getmContext()?.let { it1 -> PreferencesHelper.init(it1) }
+            ContextUtils.getmContext()?.let { PreferencesHelper.init(it) }
             PreferencesHelper.markPrivacyPolicyAsRead()
             activity?.supportFragmentManager?.popBackStack()
         }
@@ -64,39 +78,45 @@ class PrivacyPolicyDialogFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        loadPrivacyPolicyFromWeb()
+        observeViewModel()
+        loadPrivacyPolicy()
     }
 
-    private fun loadPrivacyPolicyFromWeb() {
+    private fun observeViewModel() {
+        viewModel.agreementContent.observe(viewLifecycleOwner) { content ->
+            if (!content.isNullOrEmpty()) {
+                try {
+                    val dataUri = "data:application/pdf;base64,$content"
+                    val html = "<iframe src='$dataUri' width='100%' height='100%'></iframe>"
+                    binding.webView.settings.javaScriptEnabled = true
+                    binding.webView.loadData(html, "text/html", "UTF-8")
+                    delayReadButton()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    loadPrivacyPolicyFromLocal()
+                }
+            } else {
+                loadPrivacyPolicyFromLocal()
+            }
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            loadPrivacyPolicyFromLocal()
+            println("Error loading privacy policy: $errorMessage")
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.llProgressBar.root.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun loadPrivacyPolicy() {
         binding.webView.webViewClient = object : WebViewClient() {
-            var isTimeout = true
-            override fun shouldOverrideUrlLoading(
-                view: WebView,
-                request: WebResourceRequest,
-            ): Boolean {
-                val intent = Intent(Intent.ACTION_VIEW, request.url)
-                view.context.startActivity(intent)
-                return true
-            }
-
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if(isTimeout) {
-                        loadPrivacyPolicyFromLocal()
-                    }
-                }, 10000)
-                binding.llProgressBar.root.visibility = View.VISIBLE
-                super.onPageStarted(view, url, favicon)
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                binding.llProgressBar.root.visibility = View.GONE
-                delayReadButton()
-                isTimeout = false
-                super.onPageFinished(view, url)
-            }
-
-            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
                 loadPrivacyPolicyFromLocal()
                 super.onReceivedError(view, request, error)
             }
@@ -110,19 +130,22 @@ class PrivacyPolicyDialogFragment : Fragment() {
                 super.onReceivedHttpError(view, request, errorResponse)
             }
 
-            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+            override fun onReceivedSslError(
+                view: WebView?,
+                handler: SslErrorHandler?,
+                error: SslError?
+            ) {
                 loadPrivacyPolicyFromLocal()
                 super.onReceivedSslError(view, handler, error)
             }
         }
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (binding.llProgressBar.root.visibility == View.VISIBLE) {
-                loadPrivacyPolicyFromLocal()
-            }
-        }, 10000)
-        binding.llProgressBar.root.visibility = View.VISIBLE
-        mPrivacyPolicyUrl?.let { binding.webView.loadUrl(it) }
+        viewModel.getAgreementContent(
+            isProduction = true,
+            contractor = "ELOGO",
+            itemCode = "eBookTransfer",
+            language = "TR",
+            agreementType = "USEAGREEMENT"
+        )
     }
 
     private fun loadPrivacyPolicyFromLocal() {
