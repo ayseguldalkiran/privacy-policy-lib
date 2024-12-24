@@ -55,7 +55,7 @@ object RetrofitServiceFactory {
     const val HTTPS = "https://"
     const val BASE_NAMESPACE_PRODUCTION = "license1.logo.com.tr/"
     const val BASE_NAMESPACE_PRODUCTION2 = "license2.logo.com.tr/"
-    const val BASE_NAMESPACE_TEST = "http://licensetest.logo.com.tr/"
+    const val BASE_NAMESPACE_TEST = "licensetest.logo.com.tr/"
     const val NAMESPACE_END = "LogoLicenseService/AgreementService"
     const val GET_AGREEMENT_CONTENT = "GetAgreementContent"
 
