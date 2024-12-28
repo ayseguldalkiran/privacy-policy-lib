@@ -12,7 +12,6 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.privacy_policy_lib.PrivacyPolicyDialogFragment
 import com.example.privacy_policy_lib.R
 import com.example.privacy_policy_lib.core.model.ContractItem
 import com.example.privacy_policy_lib.core.utils.ContextUtils
@@ -25,6 +24,7 @@ class ContractsAdapter(
     private val mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
     private val contractsList: MutableList<ContractItem> = ArrayList()
     private var checkboxStates = BooleanArray(0)
+    internal var onContractClicked: (text: String, content: String) -> Unit = { _, _ -> }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -42,16 +42,8 @@ class ContractsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val contractItem = contractsList[position]
-        holder.bind(contractItem)
-        holder.txtContract.setOnClickListener {
-            val fragment = PrivacyPolicyDialogFragment.newInstance(
-                contractItem.contractItemText,
-                contractItem.contractItemContent
-            )
-            (mContext as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .addToBackStack(null)
-                .commit()
+        holder.bind(contractItem) { text, content ->
+            onContractClicked(text, content)
         }
         holder.chkBoxContract.setOnCheckedChangeListener { _, isChecked ->
             checkboxStates[position] = isChecked
@@ -71,8 +63,11 @@ class ContractsAdapter(
     inner class ViewHolder(binding: ContractItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val txtContract : TextView = binding.txtContract
         val chkBoxContract : CheckBox = binding.chkContract
-        fun bind(contractItem: ContractItem) {
-            val firstString =  contractItem.contractItemText
+        fun bind(
+            contractItem: ContractItem,
+            onContractClicked: (text: String, content: String) -> Unit
+        ) {
+            val firstString = contractItem.contractItemText
             val secondString = ContextUtils.getStringResource(R.string.str_approve)
             val spannable = SpannableString("$firstString $secondString")
 
@@ -89,8 +84,10 @@ class ContractsAdapter(
                 firstString.length,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-
             txtContract.text = spannable
+            txtContract.setOnClickListener {
+                onContractClicked(contractItem.contractItemText, contractItem.contractItemContent)
+            }
         }
     }
 

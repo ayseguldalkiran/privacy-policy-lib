@@ -27,7 +27,15 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let { ContextUtils.setmContext(it) }
-        mAdapter = ContractsAdapter(requireActivity(), this)
+        mAdapter = ContractsAdapter(requireActivity(), this).apply {
+            onContractClicked = { text, content ->
+                val fragment = PrivacyPolicyDialogFragment.newInstance(text, content)
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
         mAdapter!!.addItem(contractItemList)
     }
 
@@ -52,9 +60,6 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     }
 
     override fun onAllCheckboxChecked(allChecked: Boolean) {

@@ -45,7 +45,7 @@ class PrivacyPolicyViewModel : ViewModel() {
 
     private fun handleSuccess(response: GetAgreementContentResponse?) {
         _isLoading.postValue(false)
-        val content = response?.body?.contentResponse?.result?.contentHash
+        val content = response?.body?.contentResponse?.result?.content
         if (!content.isNullOrEmpty()) {
             _agreementContent.postValue(content)
         } else {

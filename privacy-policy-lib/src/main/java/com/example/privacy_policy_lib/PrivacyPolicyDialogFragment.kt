@@ -1,14 +1,15 @@
 package com.example.privacy_policy_lib
 
-import android.net.http.SslError
+import android.graphics.Bitmap
+import android.graphics.pdf.PdfRenderer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.ParcelFileDescriptor
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.SslErrorHandler
-import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
@@ -16,9 +17,10 @@ import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.webkit.WebViewAssetLoader
+import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
 import com.example.privacy_policy_lib.databinding.FragmentPrivacyPolicyDialogBinding
-import com.example.privacy_policy_lib.core.utils.ContextUtils
+import java.io.File
 
 class PrivacyPolicyDialogFragment : Fragment() {
 
@@ -63,6 +65,12 @@ class PrivacyPolicyDialogFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
+        loadPrivacyPolicy()
+    }
+
     override fun onStart() {
         super.onStart()
         binding.btnRead.setOnClickListener {
@@ -77,68 +85,26 @@ class PrivacyPolicyDialogFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        observeViewModel()
-        loadPrivacyPolicy()
-    }
-
     private fun observeViewModel() {
         viewModel.agreementContent.observe(viewLifecycleOwner) { content ->
             if (!content.isNullOrEmpty()) {
                 try {
-                    val dataUri = "data:application/pdf;base64,$content"
-                    val html = "<iframe src='$dataUri' width='100%' height='100%'></iframe>"
-                    binding.webView.settings.javaScriptEnabled = true
-                    binding.webView.loadData(html, "text/html", "UTF-8")
-                    delayReadButton()
+                    displayPdf(content)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    loadPrivacyPolicyFromLocal()
+                    switchToWebViewToShowLocalFile()
                 }
             } else {
-                loadPrivacyPolicyFromLocal()
+                switchToWebViewToShowLocalFile()
             }
         }
-
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            loadPrivacyPolicyFromLocal()
-            println("Error loading privacy policy: $errorMessage")
-        }
-
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.llProgressBar.root.visibility = if (isLoading) View.VISIBLE else View.GONE
+            switchToWebViewToShowLocalFile()
         }
     }
 
     private fun loadPrivacyPolicy() {
-        binding.webView.webViewClient = object : WebViewClient() {
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                loadPrivacyPolicyFromLocal()
-                super.onReceivedError(view, request, error)
-            }
-
-            override fun onReceivedHttpError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                errorResponse: WebResourceResponse?
-            ) {
-                loadPrivacyPolicyFromLocal()
-                super.onReceivedHttpError(view, request, errorResponse)
-            }
-
-            override fun onReceivedSslError(
-                view: WebView?,
-                handler: SslErrorHandler?,
-                error: SslError?
-            ) {
-                loadPrivacyPolicyFromLocal()
-                super.onReceivedSslError(view, handler, error)
-            }
-        }
+        binding.llProgressBar.root.visibility = View.VISIBLE
         viewModel.getAgreementContent(
             isProduction = true,
             contractor = "ELOGO",
@@ -148,12 +114,49 @@ class PrivacyPolicyDialogFragment : Fragment() {
         )
     }
 
-    private fun loadPrivacyPolicyFromLocal() {
+    private fun displayPdf(base64Content: String) {
+        val pdfFile = base64ToPdf(base64Content, "temp.pdf")
+        val parcelFileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
+        val pdfRenderer = PdfRenderer(parcelFileDescriptor)
+
+        binding.pdfScrollView.visibility = View.VISIBLE
+        binding.webView.visibility = View.GONE
+
+        for (i in 0 until pdfRenderer.pageCount) {
+            val page = pdfRenderer.openPage(i)
+            val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
+            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+            page.close()
+
+            val imageView = android.widget.ImageView(requireContext())
+            imageView.setImageBitmap(bitmap)
+            imageView.adjustViewBounds = true
+            binding.pdfContainer.addView(imageView)
+        }
+
+        pdfRenderer.close()
+        parcelFileDescriptor.close()
+        binding.llProgressBar.root.visibility = View.GONE
+    }
+
+    private fun base64ToPdf(base64Data: String, fileName: String): File {
+        val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+        val file = File(requireContext().cacheDir, fileName)
+        file.outputStream().use {
+            it.write(decodedBytes)
+        }
+        return file
+    }
+
+    private fun switchToWebViewToShowLocalFile() {
         val assetLoader = ContextUtils.getmContext()?.let { WebViewAssetLoader.AssetsPathHandler(it) }?.let {
             WebViewAssetLoader.Builder()
                 .addPathHandler("/assets/", it)
                 .build()
-        }
+            }
+
+        binding.pdfScrollView.visibility = View.GONE
+        binding.webView.visibility = View.VISIBLE
 
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
