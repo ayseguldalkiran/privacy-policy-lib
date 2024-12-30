@@ -1,6 +1,8 @@
 package com.example.privacy_policy_lib.core.model.api
 
-import com.example.privacy_policy_lib.core.model.Envelope
+import com.example.privacy_policy_lib.core.model.ApproveAgreementEnvelope
+import com.example.privacy_policy_lib.core.model.ApproveAgreementResponse
+import com.example.privacy_policy_lib.core.model.GetAgreementContentRequest
 import com.example.privacy_policy_lib.core.model.GetAgreementContentResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -10,11 +12,24 @@ import retrofit2.http.POST
 
 interface AgreementServiceApi {
 
+    companion object {
+        const val REQUEST_URL = "LogoLicenseService/AgreementService/LogoAgreementService.asmx"
+        const val REQUEST_URL_TEST = "AgreementService/LogoAgreementService.asmx"
+        //Test amaçlı kullanılırken REQUEST_URL_TEST kullanılmalı.
+    }
+
     @Headers("Content-Type: text/xml; charset=utf-8")
-    @POST("AgreementService/LogoAgreementService.asmx")
+    @POST(REQUEST_URL)
     fun getAgreementContent(
         @Header("SOAPAction") soapAction: String,
-        @Body envelope: Envelope
+        @Body envelope: GetAgreementContentRequest
     ): Call<GetAgreementContentResponse>
+
+    @Headers("Content-Type: text/xml; charset=utf-8")
+    @POST(REQUEST_URL)
+    fun approveAgreementContent(
+        @Header("SOAPAction") soapAction: String,
+        @Body envelope: ApproveAgreementEnvelope
+    ): Call<ApproveAgreementResponse>
 
 }

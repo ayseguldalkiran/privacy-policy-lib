@@ -7,6 +7,8 @@ import org.simpleframework.xml.Element
 import org.simpleframework.xml.Namespace
 import org.simpleframework.xml.Root
 
+// Test amaçlı kullanılırken BASE_NAMESPACE_PRODUCTION yerine BASE_NAMESPACE_PRODUCTION2 kullanılmalı.
+
 @Root(name = "Envelope", strict = false)
 @Namespace(reference = "http://schemas.xmlsoap.org/soap/envelope/", prefix = "soap")
 data class GetAgreementContentResponse(

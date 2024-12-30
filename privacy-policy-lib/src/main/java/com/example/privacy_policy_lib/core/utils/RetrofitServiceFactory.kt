@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitServiceFactory {
 
+    private var retrofitInstance: Retrofit? = null
+
     private fun getBaseUrl(isProduction: Boolean): String {
         return if (isProduction) {
             "$HTTPS$BASE_NAMESPACE_PRODUCTION"
@@ -30,26 +32,28 @@ object RetrofitServiceFactory {
         readTimeout: Long = 30,
         connectTimeout: Long = 10
     ): AgreementServiceApi {
-        val baseUrl = getBaseUrl(isProduction)
+        if (retrofitInstance == null) {
+            val baseUrl = getBaseUrl(isProduction)
 
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            val logging = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+
+            val client = OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .readTimeout(readTimeout, TimeUnit.SECONDS)
+                .connectTimeout(connectTimeout, TimeUnit.SECONDS)
+                .build()
+
+            retrofitInstance = Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(client)
+                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .build()
         }
-
-        val clientBuilder = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .readTimeout(readTimeout, TimeUnit.SECONDS)
-            .connectTimeout(connectTimeout, TimeUnit.SECONDS)
-
-        val client = clientBuilder.build()
-
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .client(client)
-            .addConverterFactory(SimpleXmlConverterFactory.create())
-            .build()
-            .create(AgreementServiceApi::class.java)
+        return retrofitInstance!!.create(AgreementServiceApi::class.java)
     }
+
 
     const val HTTP = "http://"
     const val HTTPS = "https://"
@@ -58,5 +62,5 @@ object RetrofitServiceFactory {
     const val BASE_NAMESPACE_TEST = "licensetest.logo.com.tr/"
     const val NAMESPACE_END = "LogoLicenseService/AgreementService"
     const val GET_AGREEMENT_CONTENT = "GetAgreementContent"
-
+    const val APPROVE_AGREEMENT_CONTENT = "ApproveAgreementContent"
 }
