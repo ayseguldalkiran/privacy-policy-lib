@@ -16,36 +16,38 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.webkit.WebViewAssetLoader
 import com.example.privacy_policy_lib.core.model.ApproveAgreementRequest
+import com.example.privacy_policy_lib.core.model.GetAgreementContentParams
 import com.example.privacy_policy_lib.core.utils.ContextUtils
+import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
 import com.example.privacy_policy_lib.databinding.FragmentPrivacyPolicyDialogBinding
 import java.io.File
 
 class PrivacyPolicyDialogFragment : Fragment() {
-
     private var _binding: FragmentPrivacyPolicyDialogBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PrivacyPolicyViewModel by viewModels()
-
-    private var mPrivacyPolicyUrl: String? = null
+    private val checkBoxViewModel: CheckBoxViewModel by activityViewModels()
     private var mPrivacyPolicyFile: String? = null
     private var contentHash = ""
+    private var checkboxPosition: Int = 0
+    private var params: GetAgreementContentParams? = null
 
     companion object {
-        private const val ARG_URL = "privacy_policy_url"
-        private const val ARG_FILE = "privacy_policy_file"
-
         fun newInstance(
-            privacyPolicyUrl: String,
-            privacyPolicyFile: String
+            privacyPolicyFile: String,
+            position: Int,
+            params: GetAgreementContentParams
         ): PrivacyPolicyDialogFragment {
             return PrivacyPolicyDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_URL, privacyPolicyUrl)
-                    putString(ARG_FILE, privacyPolicyFile)
+                    putString(IntentExtraName.ARG_FILE, privacyPolicyFile)
+                    putInt(IntentExtraName.ARG_POSITION, position)
+                    putParcelable(IntentExtraName.ARG_PARAMS, params)
                 }
             }
         }
@@ -54,8 +56,9 @@ class PrivacyPolicyDialogFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            mPrivacyPolicyUrl = it.getString(ARG_URL)
-            mPrivacyPolicyFile = it.getString(ARG_FILE)
+            mPrivacyPolicyFile = it.getString(IntentExtraName.ARG_FILE)
+            checkboxPosition = it.getInt(IntentExtraName.ARG_POSITION)
+            params = it.getParcelable(IntentExtraName.ARG_PARAMS)
         }
         context?.let { ContextUtils.setmContext(it) }
     }
@@ -80,6 +83,8 @@ class PrivacyPolicyDialogFragment : Fragment() {
             ContextUtils.getmContext()?.let { PreferencesHelper.init(it) }
             PreferencesHelper.markPrivacyPolicyAsRead()
             sendApproveRequest()
+            checkBoxViewModel.setCheckboxState(checkboxPosition, true)
+            parentFragmentManager.popBackStack()
         }
     }
 
@@ -110,7 +115,6 @@ class PrivacyPolicyDialogFragment : Fragment() {
             response?.let {
                 // Token burada alınıp saklanmalı.
                 Log.i("Approval Result Token", it.body?.approveAgreementContentResponse?.approveAgreementContentResult?.agreementToken ?: "")
-                activity?.supportFragmentManager?.popBackStack()
             }
         }
     }
@@ -118,13 +122,8 @@ class PrivacyPolicyDialogFragment : Fragment() {
     private fun loadPrivacyPolicy() {
         binding.llProgressBar.root.visibility = View.VISIBLE
         // Bunlar pakedin kullanıldığı uygulamalarda tanımlı olmalı ve uygulamadan yapılan çağrıda intent'le gelmeli, contracts adapter'da da item'lar bunlardan yaratılmalı(contractItem objeleri bu bilgileri içermeli). Hangisi tıklanırsa onun içeriği PrivacyPolicyDialogFragment yaratılırken kullanımalı ve bu fonksiyona da oradan aktarılmalı.
-        viewModel.getAgreementContent(
-            isProduction = true, // Test için false yapılmalı.
-            contractor = "ELOGO",
-            itemCode = "eBookTransfer",
-            language = "TR",
-            agreementType = "USEAGREEMENT"
-        )
+
+        viewModel.getAgreementContent(params!!)
     }
 
     private fun sendApproveRequest() {
@@ -209,8 +208,11 @@ class PrivacyPolicyDialogFragment : Fragment() {
     }
 
     private fun delayReadButton() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding.btnRead.visibility = View.VISIBLE
-        }, 1000)
+        val safeBinding = _binding
+        if (safeBinding != null) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.btnRead.visibility = View.VISIBLE
+            }, 1000)
+        }
     }
 }

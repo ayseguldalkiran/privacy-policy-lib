@@ -5,6 +5,7 @@ import com.example.privacy_policy_lib.core.model.ApproveAgreementResponse
 import com.example.privacy_policy_lib.core.model.Body
 import com.example.privacy_policy_lib.core.model.GetAgreementContentRequest
 import com.example.privacy_policy_lib.core.model.GetAgreementContent
+import com.example.privacy_policy_lib.core.model.GetAgreementContentParams
 import com.example.privacy_policy_lib.core.model.OGetAgreementRequest
 import com.example.privacy_policy_lib.core.utils.RetrofitServiceFactory
 import com.example.privacy_policy_lib.core.model.GetAgreementContentResponse
@@ -17,23 +18,19 @@ import retrofit2.Response
 class AgreementService {
 
     fun callGetAgreementContent(
-        isProduction: Boolean,
-        contractor: String,
-        itemCode: String?,
-        language: String,
-        agreementType: String,
+        getAgreementContentParams: GetAgreementContentParams,
         onSuccess: (GetAgreementContentResponse?) -> Unit,
         onFailure: (Throwable) -> Unit
     ) {
-        val api = RetrofitServiceFactory.createRetrofit(isProduction)
+        val api = RetrofitServiceFactory.createRetrofit(getAgreementContentParams.isProduction)
 
-        val soapAction = RetrofitServiceFactory.getSoapAction(isProduction, GET_AGREEMENT_CONTENT)
+        val soapAction = RetrofitServiceFactory.getSoapAction(getAgreementContentParams.isProduction, GET_AGREEMENT_CONTENT)
 
         val oGetAgreementRequest = OGetAgreementRequest(
-            contractor = contractor,
-            itemCode = itemCode ?: "",
-            language = language,
-            agreementType = agreementType
+            contractor = getAgreementContentParams.contractor,
+            itemCode = getAgreementContentParams.itemCode ?: "",
+            language = getAgreementContentParams.language,
+            agreementType = getAgreementContentParams.agreementType
         )
         val getAgreementContent = GetAgreementContent(oGetAgreementRequest)
         val body = Body(getAgreementContent)

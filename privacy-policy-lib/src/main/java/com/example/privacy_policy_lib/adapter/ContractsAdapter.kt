@@ -24,7 +24,7 @@ class ContractsAdapter(
     private val mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
     private val contractsList: MutableList<ContractItem> = ArrayList()
     private var checkboxStates = BooleanArray(0)
-    internal var onContractClicked: (text: String, content: String) -> Unit = { _, _ -> }
+    internal var onContractClicked: (position: Int) -> Unit = { _-> }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -42,9 +42,10 @@ class ContractsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val contractItem = contractsList[position]
-        holder.bind(contractItem) { text, content ->
-            onContractClicked(text, content)
+        holder.bind(contractItem) {  ->
+            onContractClicked(position)
         }
+        holder.chkBoxContract.isChecked = checkboxStates[position]
         holder.chkBoxContract.setOnCheckedChangeListener { _, isChecked ->
             checkboxStates[position] = isChecked
             listener.onAllCheckboxChecked(checkboxStates.all { it })
@@ -60,12 +61,17 @@ class ContractsAdapter(
         }
     }
 
+    fun updateCheckboxStates(states: BooleanArray) {
+        checkboxStates = states.copyOf()
+        notifyDataSetChanged()
+    }
+
     inner class ViewHolder(binding: ContractItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val txtContract : TextView = binding.txtContract
         val chkBoxContract : CheckBox = binding.chkContract
         fun bind(
             contractItem: ContractItem,
-            onContractClicked: (text: String, content: String) -> Unit
+            onContractClicked: () -> Unit
         ) {
             val firstString = contractItem.contractItemText
             val secondString = ContextUtils.getStringResource(R.string.str_approve)
@@ -86,7 +92,7 @@ class ContractsAdapter(
             )
             txtContract.text = spannable
             txtContract.setOnClickListener {
-                onContractClicked(contractItem.contractItemText, contractItem.contractItemContent)
+                onContractClicked()
             }
         }
     }
