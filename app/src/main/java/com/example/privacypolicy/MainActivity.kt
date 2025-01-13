@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.privacy_policy_lib.ContractsFragment
+import com.example.privacy_policy_lib.core.AgreementTypes
+import com.example.privacy_policy_lib.core.AgreementTypes.Companion.getStringForEnum
 import com.example.privacy_policy_lib.core.model.ContractItem
-import com.example.privacy_policy_lib.core.model.GetAgreementContentParams
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 
 class MainActivity : AppCompatActivity() {
@@ -20,23 +22,27 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        window.statusBarColor = getColor(R.color.colorPrimaryDark)
 
         openFragment()
     }
 
     private fun openFragment() {
-        val params = GetAgreementContentParams(
+        val agreementType = arrayListOf(
+            AgreementTypes.GENERALAGREEMENT,
+            AgreementTypes.TERMSOFUSE
+        )
+        val params = PrivacyPolicyLibParams(
             isProduction = true,
             contractor = "ELOGO",
             itemCode = "eBookTransfer",
             language = "TR",
-            agreementType = "USEAGREEMENT"
+            agreementType = agreementType[0]
         )
 
         val contractItemList = arrayListOf(
-            ContractItem("Gizlilik Politikası"),
-            ContractItem("Aydınlatma Metni"),
-            ContractItem("Ticari Elektronik İleti metni")
+            ContractItem(getStringForEnum(agreementType[0], this)),
+            ContractItem(getStringForEnum(agreementType[1], this))
         )
 
         val privacyPolicyFile = "privacy_policy.html"

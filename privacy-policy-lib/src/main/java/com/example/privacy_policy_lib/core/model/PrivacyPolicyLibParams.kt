@@ -2,13 +2,14 @@ package com.example.privacy_policy_lib.core.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.privacy_policy_lib.core.AgreementTypes
 
-data class GetAgreementContentParams(
+data class PrivacyPolicyLibParams(
     val isProduction: Boolean,
     val contractor: String,
     val itemCode: String?,
     val language: String,
-    val agreementType: String
+    val agreementType: AgreementTypes
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -16,7 +17,7 @@ data class GetAgreementContentParams(
         parcel.readString() ?: "",
         parcel.readString(),
         parcel.readString() ?: "",
-        parcel.readString() ?: ""
+        parcel.readParcelable(AgreementTypes::class.java.classLoader)!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -24,19 +25,19 @@ data class GetAgreementContentParams(
         parcel.writeString(contractor)
         parcel.writeString(itemCode)
         parcel.writeString(language)
-        parcel.writeString(agreementType)
+        parcel.writeInt(agreementType.value)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<GetAgreementContentParams> {
-        override fun createFromParcel(parcel: Parcel): GetAgreementContentParams {
-            return GetAgreementContentParams(parcel)
+    companion object CREATOR : Parcelable.Creator<PrivacyPolicyLibParams> {
+        override fun createFromParcel(parcel: Parcel): PrivacyPolicyLibParams {
+            return PrivacyPolicyLibParams(parcel)
         }
 
-        override fun newArray(size: Int): Array<GetAgreementContentParams?> {
+        override fun newArray(size: Int): Array<PrivacyPolicyLibParams?> {
             return arrayOfNulls(size)
         }
     }

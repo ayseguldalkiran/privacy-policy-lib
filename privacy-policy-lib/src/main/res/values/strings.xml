@@ -4,4 +4,7 @@
     <string name="str_explanation">Gizliliğiniz ve haklarınız bizim için önemlidir.Hizmetlerimizi kullanmadan önce, lütfen tüm söleşmeleri dikkatlice okuyun ve onaylayın. Sözleşmeleri okuyup onaylayarak hizmetlerimizi güvenle kullanmaya başlayabilirsiniz.</string>
     <string name="str_approve">okudum, onaylıyorum</string>
     <string name="str_approve_text">Sözleşmeler İçin Onay</string>
+    <string name="str_privacy_policy">Gizlilik Politikası</string>
+    <string name="str_general_agreement">Aydınlatma Metni</string>
+    <string name="str_terms_of_use">Kullanım Koşulları</string>
 </resources>

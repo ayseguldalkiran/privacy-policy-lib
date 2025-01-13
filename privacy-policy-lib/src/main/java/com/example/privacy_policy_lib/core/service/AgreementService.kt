@@ -5,7 +5,7 @@ import com.example.privacy_policy_lib.core.model.ApproveAgreementResponse
 import com.example.privacy_policy_lib.core.model.Body
 import com.example.privacy_policy_lib.core.model.GetAgreementContentRequest
 import com.example.privacy_policy_lib.core.model.GetAgreementContent
-import com.example.privacy_policy_lib.core.model.GetAgreementContentParams
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 import com.example.privacy_policy_lib.core.model.OGetAgreementRequest
 import com.example.privacy_policy_lib.core.utils.RetrofitServiceFactory
 import com.example.privacy_policy_lib.core.model.GetAgreementContentResponse
@@ -18,19 +18,19 @@ import retrofit2.Response
 class AgreementService {
 
     fun callGetAgreementContent(
-        getAgreementContentParams: GetAgreementContentParams,
+        privacyPolicyLibParams: PrivacyPolicyLibParams,
         onSuccess: (GetAgreementContentResponse?) -> Unit,
         onFailure: (Throwable) -> Unit
     ) {
-        val api = RetrofitServiceFactory.createRetrofit(getAgreementContentParams.isProduction)
+        val api = RetrofitServiceFactory.createRetrofit(privacyPolicyLibParams.isProduction)
 
-        val soapAction = RetrofitServiceFactory.getSoapAction(getAgreementContentParams.isProduction, GET_AGREEMENT_CONTENT)
+        val soapAction = RetrofitServiceFactory.getSoapAction(privacyPolicyLibParams.isProduction, GET_AGREEMENT_CONTENT)
 
         val oGetAgreementRequest = OGetAgreementRequest(
-            contractor = getAgreementContentParams.contractor,
-            itemCode = getAgreementContentParams.itemCode ?: "",
-            language = getAgreementContentParams.language,
-            agreementType = getAgreementContentParams.agreementType
+            contractor = privacyPolicyLibParams.contractor,
+            itemCode = privacyPolicyLibParams.itemCode ?: "",
+            language = privacyPolicyLibParams.language,
+            agreementType = privacyPolicyLibParams.agreementType.toString()
         )
         val getAgreementContent = GetAgreementContent(oGetAgreementRequest)
         val body = Body(getAgreementContent)

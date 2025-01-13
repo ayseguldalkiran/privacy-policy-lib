@@ -20,7 +20,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.webkit.WebViewAssetLoader
 import com.example.privacy_policy_lib.core.model.ApproveAgreementRequest
-import com.example.privacy_policy_lib.core.model.GetAgreementContentParams
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
@@ -35,13 +35,13 @@ class PrivacyPolicyDialogFragment : Fragment() {
     private var mPrivacyPolicyFile: String? = null
     private var contentHash = ""
     private var checkboxPosition: Int = 0
-    private var params: GetAgreementContentParams? = null
+    private var params: PrivacyPolicyLibParams? = null
 
     companion object {
         fun newInstance(
             privacyPolicyFile: String,
             position: Int,
-            params: GetAgreementContentParams
+            params: PrivacyPolicyLibParams
         ): PrivacyPolicyDialogFragment {
             return PrivacyPolicyDialogFragment().apply {
                 arguments = Bundle().apply {

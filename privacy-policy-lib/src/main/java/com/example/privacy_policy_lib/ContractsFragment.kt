@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.privacy_policy_lib.adapter.ContractsAdapter
 import com.example.privacy_policy_lib.core.model.ContractItem
-import com.example.privacy_policy_lib.core.model.GetAgreementContentParams
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.databinding.FragmentContractsBinding
@@ -22,7 +22,7 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     private val binding get() = _binding!!
     private var mAdapter: ContractsAdapter? = null
     private val checkBoxViewModel: CheckBoxViewModel by activityViewModels()
-    private var params: GetAgreementContentParams? = null
+    private var params: PrivacyPolicyLibParams? = null
     private var privacyPolicyFile: String? = null
     var contractItemList = arrayListOf(ContractItem())
 
