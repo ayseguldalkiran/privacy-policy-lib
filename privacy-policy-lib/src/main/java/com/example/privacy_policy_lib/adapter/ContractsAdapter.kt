@@ -2,6 +2,8 @@ package com.example.privacy_policy_lib.adapter
 
 
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -9,6 +11,7 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +22,6 @@ import com.example.privacy_policy_lib.databinding.ContractItemBinding
 
 class ContractsAdapter(
     var mContext: FragmentActivity? = null,
-    private val listener: OnAllCheckboxCheckedListener
 ) : RecyclerView.Adapter<ContractsAdapter.ViewHolder>() {
     private val mLayoutInflater: LayoutInflater = LayoutInflater.from(mContext)
     private val contractsList: MutableList<ContractItem> = ArrayList()
@@ -46,10 +48,6 @@ class ContractsAdapter(
             onContractClicked(position)
         }
         holder.chkBoxContract.isChecked = checkboxStates[position]
-        holder.chkBoxContract.setOnCheckedChangeListener { _, isChecked ->
-            checkboxStates[position] = isChecked
-            listener.onAllCheckboxChecked(checkboxStates.all { it })
-        }
     }
 
     fun addItem(items: ArrayList<ContractItem>?) {
@@ -67,8 +65,9 @@ class ContractsAdapter(
     }
 
     inner class ViewHolder(binding: ContractItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        val txtContract : TextView = binding.txtContract
+        private val txtContract : TextView = binding.txtContract
         val chkBoxContract : CheckBox = binding.chkContract
+        private val lnContract : LinearLayout = binding.lnContract
         fun bind(
             contractItem: ContractItem,
             onContractClicked: () -> Unit
@@ -91,9 +90,26 @@ class ContractsAdapter(
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             txtContract.text = spannable
-            txtContract.setOnClickListener {
-                onContractClicked()
+            chkBoxContract.isClickable = false
+            updateContractState(chkBoxContract.isChecked, lnContract, onContractClicked)
+
+            chkBoxContract.setOnCheckedChangeListener { _, isChecked ->
+                updateContractState(isChecked, lnContract, onContractClicked)
             }
+        }
+    }
+
+    private fun updateContractState(isChecked: Boolean, lnContract: LinearLayout, onContractClicked: () -> Unit) {
+        if (!isChecked) {
+            lnContract.setOnClickListener {
+                lnContract.isEnabled = false
+                onContractClicked()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    lnContract.isEnabled = true
+                }, 2000)
+            }
+        } else {
+            lnContract.setOnClickListener(null)
         }
     }
 

@@ -34,7 +34,7 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
         }
 
         context?.let { ContextUtils.setmContext(it) }
-        mAdapter = ContractsAdapter(requireActivity(), this).apply {
+        mAdapter = ContractsAdapter(requireActivity()).apply {
             onContractClicked = { position ->
                 val fragment = PrivacyPolicyDialogFragment.newInstance(privacyPolicyFile!!, position)
                 requireActivity().supportFragmentManager.beginTransaction()
