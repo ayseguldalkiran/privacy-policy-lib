@@ -37,6 +37,7 @@ class PrivacyPolicyDialogFragment : Fragment() {
     private var checkboxPosition: Int = 0
 
     companion object {
+        @JvmStatic
         fun newInstance(
             privacyPolicyFile: String,
             position: Int
