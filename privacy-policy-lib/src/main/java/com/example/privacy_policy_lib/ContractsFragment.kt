@@ -66,6 +66,7 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
             requireActivity().setResult(Activity.RESULT_OK, resultIntent)
             requireActivity().finish()
         }
+        checkBoxViewModel.initialize(contractItemList.size)
         checkBoxViewModel.checkboxStates.observe(viewLifecycleOwner) { states ->
             mAdapter?.updateCheckboxStates(states)
             binding.btnRead.setBackgroundColor(
