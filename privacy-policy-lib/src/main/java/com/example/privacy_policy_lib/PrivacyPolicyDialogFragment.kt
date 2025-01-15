@@ -20,7 +20,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.webkit.WebViewAssetLoader
 import com.example.privacy_policy_lib.core.model.ApproveAgreementRequest
-import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
@@ -35,19 +35,16 @@ class PrivacyPolicyDialogFragment : Fragment() {
     private var mPrivacyPolicyFile: String? = null
     private var contentHash = ""
     private var checkboxPosition: Int = 0
-    private var params: PrivacyPolicyLibParams? = null
 
     companion object {
         fun newInstance(
             privacyPolicyFile: String,
-            position: Int,
-            params: PrivacyPolicyLibParams
+            position: Int
         ): PrivacyPolicyDialogFragment {
             return PrivacyPolicyDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(IntentExtraName.ARG_FILE, privacyPolicyFile)
                     putInt(IntentExtraName.ARG_POSITION, position)
-                    putParcelable(IntentExtraName.ARG_PARAMS, params)
                 }
             }
         }
@@ -58,7 +55,6 @@ class PrivacyPolicyDialogFragment : Fragment() {
         arguments?.let {
             mPrivacyPolicyFile = it.getString(IntentExtraName.ARG_FILE)
             checkboxPosition = it.getInt(IntentExtraName.ARG_POSITION)
-            params = it.getParcelable(IntentExtraName.ARG_PARAMS)
         }
         context?.let { ContextUtils.setmContext(it) }
     }
@@ -97,7 +93,14 @@ class PrivacyPolicyDialogFragment : Fragment() {
         viewModel.agreementResponse.observe(viewLifecycleOwner) { response ->
             val content = response?.body?.contentResponse?.result?.content
             if (!content.isNullOrEmpty()) {
+                val agreementType = PrivacyPolicyState.params.agreementTypes[checkboxPosition]
                 contentHash = response.body?.contentResponse?.result?.contentHash ?: ""
+                val existingIndex = PrivacyPolicyState.params.contentHashList.indexOfFirst { it.first == agreementType }
+                if (existingIndex != -1) {
+                    PrivacyPolicyState.params.contentHashList[existingIndex] = Pair(agreementType, contentHash)
+                } else {
+                    PrivacyPolicyState.params.contentHashList.add(Pair(agreementType, contentHash))
+                }
                 try {
                     displayPdf(content)
                 } catch (e: Exception) {
@@ -112,38 +115,44 @@ class PrivacyPolicyDialogFragment : Fragment() {
             switchToWebViewToShowLocalFile()
         }
         viewModel.approvalResult.observe(viewLifecycleOwner) { response ->
-            response?.let {
-                // Token burada alınıp saklanmalı.
-                Log.i("Approval Result Token", it.body?.approveAgreementContentResponse?.approveAgreementContentResult?.agreementToken ?: "")
+            response?.let { approveResponse ->
+                Log.i("Approval Result Token", approveResponse.body?.approveAgreementContentResponse?.approveAgreementContentResult?.agreementToken ?: "")
+                val agreementType = PrivacyPolicyState.params.agreementTypes[checkboxPosition]
+                val newToken = approveResponse.body?.approveAgreementContentResponse?.approveAgreementContentResult?.agreementToken ?: ""
+                val existingIndex = PrivacyPolicyState.params.agreementTokenList.indexOfFirst { it.first == agreementType }
+                if (existingIndex != -1) {
+                    PrivacyPolicyState.params.agreementTokenList[existingIndex] = Pair(agreementType, newToken)
+                } else {
+                    PrivacyPolicyState.params.agreementTokenList.add(Pair(agreementType, newToken))
+                }
             }
         }
     }
 
     private fun loadPrivacyPolicy() {
         binding.llProgressBar.root.visibility = View.VISIBLE
-        // Bunlar pakedin kullanıldığı uygulamalarda tanımlı olmalı ve uygulamadan yapılan çağrıda intent'le gelmeli, contracts adapter'da da item'lar bunlardan yaratılmalı(contractItem objeleri bu bilgileri içermeli). Hangisi tıklanırsa onun içeriği PrivacyPolicyDialogFragment yaratılırken kullanımalı ve bu fonksiyona da oradan aktarılmalı.
-
-        viewModel.getAgreementContent(params!!)
+        viewModel.getAgreementContent(checkboxPosition)
     }
 
     private fun sendApproveRequest() {
         // Bunların bir kısmı zaten contractItem içeriği, geri kalanı da yine istek atan uygulamadan gelmeli ve fragment oluşturulurken aktarılmalı.
-        val uniqueInfo = "10.122.122.43|Tiger|LN1|1"
+        //val uniqueInfo = "10.122.122.43|Tiger|LN1|1"
+        val uniqueInfo = PrivacyPolicyState.params.server + "|" + PrivacyPolicyState.params.erpType + "|" + PrivacyPolicyState.params.userName + "|" + PrivacyPolicyState.params.password
         val request = ApproveAgreementRequest(
             uniqueInfo = uniqueInfo,
-            ipAddress = "10.122.122.143",
+            ipAddress = PrivacyPolicyState.params.server,
             contentHash = contentHash,
             extensionFields = "",
-            itemCode = "eBookTransfer",
-            agreementType = "USEAGREEMENT",
-            contractor = "ELOGO",
-            beginDate = "2024-01-01", // Bu bilgi nereden alınıyor?
-            language = "TR",
+            itemCode = PrivacyPolicyState.params.itemCode,
+            agreementType = PrivacyPolicyState.params.agreementTypes[checkboxPosition].toString(),
+            contractor = PrivacyPolicyState.params.contractor,
+            beginDate = "",
+            language = PrivacyPolicyState.params.language,
             signedContentBase64Encoded = ""
         )
         val envelope = viewModel.createApproveAgreementEnvelope(request)
         viewModel.approveAgreementContent(
-            isProduction = false, // Test için false yapılmalı.
+            isProduction = PrivacyPolicyState.params.isProduction, // Test için false yapılmalı.
             request = envelope
         )
     }

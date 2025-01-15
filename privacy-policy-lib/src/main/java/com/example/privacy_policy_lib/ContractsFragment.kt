@@ -1,5 +1,7 @@
 package com.example.privacy_policy_lib
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.privacy_policy_lib.adapter.ContractsAdapter
 import com.example.privacy_policy_lib.core.model.ContractItem
-import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PARAMS_TO_SEND_TO_APP
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.databinding.FragmentContractsBinding
@@ -22,21 +25,19 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     private val binding get() = _binding!!
     private var mAdapter: ContractsAdapter? = null
     private val checkBoxViewModel: CheckBoxViewModel by activityViewModels()
-    private var params: PrivacyPolicyLibParams? = null
     private var privacyPolicyFile: String? = null
     var contractItemList = arrayListOf(ContractItem())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            params = it.getParcelable(IntentExtraName.ARG_PARAMS)
             privacyPolicyFile = it.getString(IntentExtraName.ARG_FILE)
         }
 
         context?.let { ContextUtils.setmContext(it) }
         mAdapter = ContractsAdapter(requireActivity(), this).apply {
             onContractClicked = { position ->
-                val fragment = PrivacyPolicyDialogFragment.newInstance(privacyPolicyFile!!, position, params!!)
+                val fragment = PrivacyPolicyDialogFragment.newInstance(privacyPolicyFile!!, position)
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .addToBackStack(null)
@@ -60,11 +61,14 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = mAdapter
         binding.btnRead.setOnClickListener {
-            Toast.makeText(context, "Read button clicked", Toast.LENGTH_SHORT).show()
+            val resultIntent = Intent().apply {
+                putExtra(PARAMS_TO_SEND_TO_APP, PrivacyPolicyState.params)
+            }
+            requireActivity().setResult(Activity.RESULT_OK, resultIntent)
+            requireActivity().finish()
         }
         checkBoxViewModel.checkboxStates.observe(viewLifecycleOwner) { states ->
             mAdapter?.updateCheckboxStates(states)
-            binding.btnRead.isEnabled = states.all { it }
             binding.btnRead.setBackgroundColor(
                 if (states.all { it }) resources.getColor(R.color.colorPrimary)
                 else resources.getColor(R.color.colorDisabled)
@@ -83,7 +87,6 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     }
 
     override fun onAllCheckboxChecked(allChecked: Boolean) {
-        binding.btnRead.isEnabled = allChecked
         binding.btnRead.setBackgroundColor(
             if (allChecked) resources.getColor(R.color.colorPrimary)
             else resources.getColor(R.color.colorDisabled)

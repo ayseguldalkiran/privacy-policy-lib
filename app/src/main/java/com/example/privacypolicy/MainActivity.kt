@@ -10,6 +10,8 @@ import com.example.privacy_policy_lib.core.AgreementTypes
 import com.example.privacy_policy_lib.core.AgreementTypes.Companion.getStringForEnum
 import com.example.privacy_policy_lib.core.model.ContractItem
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PARAMS_TO_GET_FROM_APP
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 
 class MainActivity : AppCompatActivity() {
@@ -24,31 +26,34 @@ class MainActivity : AppCompatActivity() {
         }
         window.statusBarColor = getColor(R.color.colorPrimaryDark)
 
-        openFragment()
+        val params = intent?.getParcelableExtra<PrivacyPolicyLibParams>(PARAMS_TO_GET_FROM_APP)
+
+        openFragment(params)
     }
 
-    private fun openFragment() {
-        val agreementType = arrayListOf(
-            AgreementTypes.GENERALAGREEMENT,
-            AgreementTypes.TERMSOFUSE
-        )
-        val params = PrivacyPolicyLibParams(
-            isProduction = true,
-            contractor = "ELOGO",
-            itemCode = "eBookTransfer",
-            language = "TR",
-            agreementType = agreementType[0]
-        )
-
-        val contractItemList = arrayListOf(
-            ContractItem(getStringForEnum(agreementType[0], this)),
-            ContractItem(getStringForEnum(agreementType[1], this))
-        )
+    private fun openFragment(params: PrivacyPolicyLibParams?) {
+        var contractItemList = arrayListOf<ContractItem>()
+        params?.let {
+            PrivacyPolicyState.params = it
+            contractItemList = ArrayList(
+                it.agreementTypes.map { agreement ->
+                    ContractItem(AgreementTypes.getStringForEnum(agreement, this))
+                }
+            )
+        } ?: run {
+            val agreementTypes = arrayListOf(
+                AgreementTypes.GENERALAGREEMENT,
+                AgreementTypes.TERMSOFUSE
+            )
+            contractItemList = arrayListOf(
+                ContractItem(getStringForEnum(agreementTypes[0], this)),
+                ContractItem(getStringForEnum(agreementTypes[1], this))
+            )
+        }
 
         val privacyPolicyFile = "privacy_policy.html"
 
         val bundle = Bundle().apply {
-            putParcelable(IntentExtraName.ARG_PARAMS, params)
             putString(IntentExtraName.ARG_FILE, privacyPolicyFile)
         }
 

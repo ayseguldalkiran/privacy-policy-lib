@@ -10,7 +10,6 @@ import com.example.privacy_policy_lib.core.model.GetAgreementContentResponse
 import com.example.privacy_policy_lib.core.model.ApproveAgreementEnvelope
 import com.example.privacy_policy_lib.core.model.ApproveAgreementRequest
 import com.example.privacy_policy_lib.core.model.ApproveAgreementResponse
-import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 
 class PrivacyPolicyViewModel : ViewModel() {
 
@@ -29,12 +28,12 @@ class PrivacyPolicyViewModel : ViewModel() {
     val isLoading: LiveData<Boolean> get() = _isLoading // Şu an kullanmıyoruz, kullanılabilir.
 
     fun getAgreementContent(
-        privacyPolicyLibParams: PrivacyPolicyLibParams
+        agreementPosition: Int
     ) {
         _isLoading.postValue(true)
 
         agreementService.callGetAgreementContent(
-            privacyPolicyLibParams,
+            agreementPosition,
             onSuccess = { response ->
                 handleSuccess(response)
             },

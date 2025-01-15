@@ -51,7 +51,6 @@
         android:background="@color/colorDisabled"
         android:text="@string/str_ok"
         android:textColor="@color/white"
-        android:enabled="false"
         style="?android:attr/borderlessButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
