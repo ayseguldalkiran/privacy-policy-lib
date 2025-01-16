@@ -14,7 +14,7 @@ import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PARAMS_TO_GET_FROM_APP
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 
-class MainActivity : AppCompatActivity() {
+class PrivacyPolicyMainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
