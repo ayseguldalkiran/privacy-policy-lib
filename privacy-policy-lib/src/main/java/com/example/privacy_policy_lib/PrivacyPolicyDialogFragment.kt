@@ -76,7 +76,7 @@ class PrivacyPolicyDialogFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        binding.btnRead.setOnClickListener {
+        binding.privacyPolicyBtnRead.setOnClickListener {
             ContextUtils.getmContext()?.let { PreferencesHelper.init(it) }
             PreferencesHelper.markPrivacyPolicyAsRead()
             sendApproveRequest()
@@ -163,8 +163,8 @@ class PrivacyPolicyDialogFragment : Fragment() {
         val parcelFileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
         val pdfRenderer = PdfRenderer(parcelFileDescriptor)
 
-        binding.pdfScrollView.visibility = View.VISIBLE
-        binding.webView.visibility = View.GONE
+        binding.privacyPolicyScrollView.visibility = View.VISIBLE
+        binding.privacyPolicyWebView.visibility = View.GONE
 
         for (i in 0 until pdfRenderer.pageCount) {
             val page = pdfRenderer.openPage(i)
@@ -175,7 +175,7 @@ class PrivacyPolicyDialogFragment : Fragment() {
             val imageView = android.widget.ImageView(requireContext())
             imageView.setImageBitmap(bitmap)
             imageView.adjustViewBounds = true
-            binding.pdfContainer.addView(imageView)
+            binding.privacyPolicyPdfContainer.addView(imageView)
         }
 
         pdfRenderer.close()
@@ -199,10 +199,10 @@ class PrivacyPolicyDialogFragment : Fragment() {
                 .build()
             }
 
-        binding.pdfScrollView.visibility = View.GONE
-        binding.webView.visibility = View.VISIBLE
+        binding.privacyPolicyScrollView.visibility = View.GONE
+        binding.privacyPolicyWebView.visibility = View.VISIBLE
 
-        binding.webView.webViewClient = object : WebViewClient() {
+        binding.privacyPolicyWebView.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                 return assetLoader?.shouldInterceptRequest(request.url)
             }
@@ -214,14 +214,14 @@ class PrivacyPolicyDialogFragment : Fragment() {
             }
         }
 
-        mPrivacyPolicyFile?.let { binding.webView.loadUrl(it) }
+        mPrivacyPolicyFile?.let { binding.privacyPolicyWebView.loadUrl(it) }
     }
 
     private fun delayReadButton() {
         val safeBinding = _binding
         if (safeBinding != null) {
             Handler(Looper.getMainLooper()).postDelayed({
-                binding.btnRead.visibility = View.VISIBLE
+                binding.privacyPolicyBtnRead.visibility = View.VISIBLE
             }, 1000)
         }
     }

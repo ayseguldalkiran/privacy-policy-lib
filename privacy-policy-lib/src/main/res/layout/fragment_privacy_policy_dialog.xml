@@ -15,34 +15,34 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
-        android:id="@+id/pdfScrollView"
+        android:id="@+id/privacy_policy_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnRead"
+        app:layout_constraintBottom_toTopOf="@id/privacy_policy_btn_read"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/pdfContainer"
+            android:id="@+id/privacy_policy_pdf_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
 
     <WebView
-        android:id="@+id/webView"
+        android:id="@+id/privacy_policy_web_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnRead"
+        app:layout_constraintBottom_toTopOf="@id/privacy_policy_btn_read"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnRead"
+        android:id="@+id/privacy_policy_btn_read"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"

@@ -45,6 +45,7 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    resourcePrefix 'privacy_policy_'
 }
 
 java{
