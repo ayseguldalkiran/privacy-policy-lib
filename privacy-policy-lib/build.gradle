@@ -67,19 +67,3 @@ dependencies {
     implementation libs.retrofit
     implementation libs.logging.interceptor
 }
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId "com.github.ayseguldalkiran"
-            artifactId "privacy-policy-lib"
-            version "14.0"
-            afterEvaluate {
-                from components.release
-            }
-            pom {
-                description = 'privacy-policy-lib'
-            }
-        }
-    }
-}
