@@ -11,7 +11,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.privacy_policy_lib.adapter.ContractsAdapter
+import com.example.privacy_policy_lib.core.AgreementTypes
 import com.example.privacy_policy_lib.core.model.ContractItem
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PARAMS_TO_SEND_TO_APP
 import com.example.privacy_policy_lib.core.utils.ContextUtils
@@ -29,8 +31,25 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
             privacyPolicyFile = it.getString(IntentExtraName.ARG_FILE)
+            val params = it.getParcelable<PrivacyPolicyLibParams>("params")
+
+            contractItemList = if (params != null) {
+                PrivacyPolicyState.params = params
+                ArrayList(params.agreementTypes.map { agreement ->
+                    ContractItem(AgreementTypes.getStringForEnum(agreement, requireContext()))
+                })
+            } else {
+                val defaultAgreements = arrayListOf(
+                    AgreementTypes.GENERALAGREEMENT,
+                    AgreementTypes.TERMSOFUSE
+                )
+                ArrayList(defaultAgreements.map { agreement ->
+                    ContractItem(AgreementTypes.getStringForEnum(agreement, requireContext()))
+                })
+            }
         }
 
         context?.let { ContextUtils.setmContext(it) }
