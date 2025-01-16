@@ -28,6 +28,7 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     private val checkBoxViewModel: CheckBoxViewModel by activityViewModels()
     private var privacyPolicyFile: String? = null
     var contractItemList = arrayListOf(ContractItem())
+    var onPrivacyPolicyAccepted: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,11 +80,8 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = mAdapter
         binding.btnRead.setOnClickListener {
-            val resultIntent = Intent().apply {
-                putExtra(PARAMS_TO_SEND_TO_APP, PrivacyPolicyState.params)
-            }
-            requireActivity().setResult(Activity.RESULT_OK, resultIntent)
-            requireActivity().finish()
+            onPrivacyPolicyAccepted?.invoke()
+            parentFragmentManager.popBackStack()
         }
         checkBoxViewModel.initialize(contractItemList.size)
         checkBoxViewModel.checkboxStates.observe(viewLifecycleOwner) { states ->
