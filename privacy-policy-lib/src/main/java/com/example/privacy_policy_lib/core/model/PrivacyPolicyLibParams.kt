@@ -15,7 +15,8 @@ data class PrivacyPolicyLibParams(
     val userName: String,
     val password: String,
     var contentHashList: MutableList<Pair<AgreementTypes, String>> = mutableListOf(),
-    var agreementTokenList: MutableList<Pair<AgreementTypes, String>> = mutableListOf()
+    var agreementTokenList: MutableList<Pair<AgreementTypes, String>> = mutableListOf(),
+    var endDateList: MutableList<Pair<AgreementTypes, String>> = mutableListOf()
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -28,6 +29,9 @@ data class PrivacyPolicyLibParams(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
+        mutableListOf<Pair<AgreementTypes, String>>().apply {
+            parcel.readList(this as List<*>, Pair::class.java.classLoader)
+        },
         mutableListOf<Pair<AgreementTypes, String>>().apply {
             parcel.readList(this as List<*>, Pair::class.java.classLoader)
         },
@@ -48,6 +52,7 @@ data class PrivacyPolicyLibParams(
         parcel.writeString(password)
         parcel.writeList(contentHashList)
         parcel.writeList(agreementTokenList)
+        parcel.writeList(endDateList)
     }
 
     override fun describeContents(): Int {
