@@ -16,6 +16,8 @@ import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.databinding.FragmentContractsBinding
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListener {
@@ -30,14 +32,21 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            privacyPolicyFile = it.getString(IntentExtraName.ARG_FILE)
-            val params = it.getParcelable<PrivacyPolicyLibParams>("params")
+        arguments?.let { args ->
+            privacyPolicyFile = args.getString(IntentExtraName.ARG_FILE)
+            val params = args.getParcelable<PrivacyPolicyLibParams>("params")
 
             contractItemList = if (params != null) {
                 PrivacyPolicyState.params = params
-                ArrayList(params.agreementTypes.map { agreement ->
-                    ContractItem(AgreementTypes.getStringForEnum(agreement, requireContext()))
+                ArrayList(params.agreementTypes.filter { agreement ->
+                    val currentDateTime = LocalDateTime.now()
+                    params.agreementTokenList.none { it.first == agreement } ||
+                            params.endDateList.any {
+                                val endDateTime = LocalDateTime.parse(it.second, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                                currentDateTime.isAfter(endDateTime)
+                            }
+                }.map { filteredAgreement ->
+                    ContractItem(AgreementTypes.getStringForEnum(filteredAgreement, requireContext()))
                 })
             } else {
                 val defaultAgreements = arrayListOf(

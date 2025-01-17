@@ -5,15 +5,15 @@ import android.os.Parcelable
 import com.example.privacy_policy_lib.core.AgreementTypes
 
 data class PrivacyPolicyLibParams(
-    val isProduction: Boolean,
-    val contractor: String,
-    val itemCode: String,
-    val language: String,
-    val agreementTypes: List<AgreementTypes>,
-    val server: String,
-    val erpType: String,
-    val userName: String,
-    val password: String,
+    var isProduction: Boolean= false,
+    var contractor: String = "",
+    var itemCode: String = "",
+    var language: String = "",
+    var agreementTypes: MutableList<AgreementTypes> = mutableListOf(),
+    var server: String = "",
+    var erpType: String = "",
+    var userName: String = "",
+    var password: String= "",
     var contentHashList: MutableList<Pair<AgreementTypes, String>> = mutableListOf(),
     var agreementTokenList: MutableList<Pair<AgreementTypes, String>> = mutableListOf(),
     var endDateList: MutableList<Pair<AgreementTypes, String>> = mutableListOf()
@@ -24,7 +24,9 @@ data class PrivacyPolicyLibParams(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.createIntArray()?.map { AgreementTypes.fromValue(it) } ?: emptyList(),
+        mutableListOf<AgreementTypes>().apply {
+            parcel.readList(this, AgreementTypes::class.java.classLoader)
+        },
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
@@ -45,7 +47,7 @@ data class PrivacyPolicyLibParams(
         parcel.writeString(contractor)
         parcel.writeString(itemCode)
         parcel.writeString(language)
-        parcel.writeIntArray(agreementTypes.map { it.value }.toIntArray())
+        parcel.writeList(agreementTypes)
         parcel.writeString(server)
         parcel.writeString(erpType)
         parcel.writeString(userName)
@@ -71,8 +73,7 @@ data class PrivacyPolicyLibParams(
 }
 
 object PrivacyPolicyState {
-    // Bunun default'unu böyle bırakmamalıyız.
-    var params: PrivacyPolicyLibParams = PrivacyPolicyLibParams(
+    /*var params: PrivacyPolicyLibParams = PrivacyPolicyLibParams(
             isProduction = true,
             contractor = "MOBILE",
             itemCode = "wmsmobile_privacyPolicy",
@@ -85,6 +86,7 @@ object PrivacyPolicyState {
             erpType = "Tiger",
             userName = "LN1",
             password = "1"
-    )
+    )*/
+    var params: PrivacyPolicyLibParams = PrivacyPolicyLibParams()
     const val PARAMS_TO_GET_FROM_APP = "privacyPolicyParamsFromApp"
 }
