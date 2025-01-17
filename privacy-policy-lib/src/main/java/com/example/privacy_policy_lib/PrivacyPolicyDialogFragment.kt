@@ -14,6 +14,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -81,8 +82,6 @@ class PrivacyPolicyDialogFragment : Fragment() {
             ContextUtils.getmContext()?.let { PreferencesHelper.init(it) }
             PreferencesHelper.markPrivacyPolicyAsRead()
             sendApproveRequest()
-            checkBoxViewModel.setCheckboxState(checkboxPosition, true)
-            parentFragmentManager.popBackStack()
         }
     }
 
@@ -112,7 +111,9 @@ class PrivacyPolicyDialogFragment : Fragment() {
             }
         }
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            switchToWebViewToShowLocalFile()
+            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+            checkBoxViewModel.setCheckboxState(checkboxPosition, false)
+            parentFragmentManager.popBackStack()
         }
         viewModel.approvalResult.observe(viewLifecycleOwner) { response ->
             response?.let { approveResponse ->
@@ -125,6 +126,8 @@ class PrivacyPolicyDialogFragment : Fragment() {
                     PrivacyPolicyState.params.agreementTokenList.add(Pair(agreementType, newToken))
                 }
             }
+            checkBoxViewModel.setCheckboxState(checkboxPosition, true)
+            parentFragmentManager.popBackStack()
         }
     }
 
