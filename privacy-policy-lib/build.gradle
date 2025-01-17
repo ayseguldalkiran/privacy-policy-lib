@@ -45,7 +45,6 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
-    resourcePrefix 'privacy_policy_'
 }
 
 java{
@@ -74,7 +73,7 @@ publishing {
         maven(MavenPublication) {
             groupId "com.github.ayseguldalkiran"
             artifactId "privacy-policy-lib"
-            version "14.0"
+            version "20.0"
             afterEvaluate {
                 from components.release
             }

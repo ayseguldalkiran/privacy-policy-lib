@@ -1,7 +1,5 @@
 package com.example.privacy_policy_lib
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +13,6 @@ import com.example.privacy_policy_lib.core.AgreementTypes
 import com.example.privacy_policy_lib.core.model.ContractItem
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
-import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PARAMS_TO_SEND_TO_APP
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.databinding.FragmentContractsBinding

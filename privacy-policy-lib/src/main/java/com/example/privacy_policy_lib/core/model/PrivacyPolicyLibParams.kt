@@ -69,8 +69,8 @@ object PrivacyPolicyState {
     // Bunun default'unu böyle bırakmamalıyız.
     var params: PrivacyPolicyLibParams = PrivacyPolicyLibParams(
             isProduction = true,
-            contractor = "ELOGO",
-            itemCode = "eBookTransfer",
+            contractor = "MOBILE",
+            itemCode = "wmsmobile_privacyPolicy",
             language = "TR",
             agreementTypes = arrayListOf(
                 AgreementTypes.GENERALAGREEMENT,
@@ -82,5 +82,4 @@ object PrivacyPolicyState {
             password = "1"
     )
     const val PARAMS_TO_GET_FROM_APP = "privacyPolicyParamsFromApp"
-    const val PARAMS_TO_SEND_TO_APP = "privacyPolicyParamsFromLib"
 }
