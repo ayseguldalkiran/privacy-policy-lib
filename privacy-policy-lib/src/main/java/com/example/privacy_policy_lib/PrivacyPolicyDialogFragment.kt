@@ -16,12 +16,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.webkit.WebViewAssetLoader
 import com.example.privacy_policy_lib.core.AgreementTypes
 import com.example.privacy_policy_lib.core.model.ApproveAgreementRequest
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.IS_APPROVED
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.POSITION
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PRIVACY_POLICY
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.core.utils.PreferencesHelper
@@ -32,7 +34,6 @@ class PrivacyPolicyDialogFragment : Fragment() {
     private var _binding: FragmentPrivacyPolicyDialogBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PrivacyPolicyViewModel by viewModels()
-    private val checkBoxViewModel: CheckBoxViewModel by activityViewModels()
     private var mPrivacyPolicyFile: String? = null
     private var contentHash = ""
     private var beginDate = ""
@@ -112,7 +113,11 @@ class PrivacyPolicyDialogFragment : Fragment() {
         }
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-            checkBoxViewModel.setCheckboxState(checkboxPosition, false)
+            val result = Bundle().apply {
+                putInt(POSITION, checkboxPosition)
+                putBoolean(IS_APPROVED, false)
+            }
+            parentFragmentManager.setFragmentResult(PRIVACY_POLICY, result)
             parentFragmentManager.popBackStack()
         }
         viewModel.approvalResult.observe(viewLifecycleOwner) { response ->
@@ -126,7 +131,11 @@ class PrivacyPolicyDialogFragment : Fragment() {
                     PrivacyPolicyState.params.agreementTokenList.add(Pair(agreementType, newToken))
                 }
             }
-            checkBoxViewModel.setCheckboxState(checkboxPosition, true)
+            val result = Bundle().apply {
+                putInt(POSITION, checkboxPosition)
+                putBoolean(IS_APPROVED, true)
+            }
+            parentFragmentManager.setFragmentResult(PRIVACY_POLICY, result)
             parentFragmentManager.popBackStack()
         }
     }

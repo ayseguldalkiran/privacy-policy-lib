@@ -89,4 +89,7 @@ object PrivacyPolicyState {
     )*/
     var params: PrivacyPolicyLibParams = PrivacyPolicyLibParams()
     const val PARAMS_TO_GET_FROM_APP = "privacyPolicyParamsFromApp"
+    const val PRIVACY_POLICY = "privacy_policy"
+    const val POSITION = "position"
+    const val IS_APPROVED = "is_approved"
 }

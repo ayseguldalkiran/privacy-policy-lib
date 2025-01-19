@@ -13,6 +13,9 @@ import com.example.privacy_policy_lib.core.AgreementTypes
 import com.example.privacy_policy_lib.core.model.ContractItem
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.IS_APPROVED
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.POSITION
+import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PRIVACY_POLICY
 import com.example.privacy_policy_lib.core.utils.ContextUtils
 import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.databinding.FragmentContractsBinding
@@ -28,6 +31,7 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     private var privacyPolicyFile: String? = null
     var contractItemList = arrayListOf(ContractItem())
     var onPrivacyPolicyAccepted: (() -> Unit)? = null
+    private lateinit var checkboxStates: BooleanArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,18 +93,22 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
             onPrivacyPolicyAccepted?.invoke()
             parentFragmentManager.popBackStack()
         }
-        checkBoxViewModel.initialize(contractItemList.size)
-        checkBoxViewModel.checkboxStates.observe(viewLifecycleOwner) { states ->
-            mAdapter?.updateCheckboxStates(states)
+        checkboxStates = BooleanArray(contractItemList.size) { false }
+        binding.btnRead.setBackgroundColor(
+            if (checkboxStates.all { it }) resources.getColor(R.color.colorPrimary)
+            else resources.getColor(R.color.colorDisabled)
+        )
+        mAdapter?.updateCheckboxStates(checkboxStates)
+
+        parentFragmentManager.setFragmentResultListener(PRIVACY_POLICY, viewLifecycleOwner) { _, bundle ->
+            val position = bundle.getInt(POSITION)
+            val isApproved = bundle.getBoolean(IS_APPROVED)
+            checkboxStates[position] = isApproved
             binding.btnRead.setBackgroundColor(
-                if (states.all { it }) resources.getColor(R.color.colorPrimary)
+                if (checkboxStates.all { it }) resources.getColor(R.color.colorPrimary)
                 else resources.getColor(R.color.colorDisabled)
             )
-        }
-
-        parentFragmentManager.setFragmentResultListener("privacy_policy", viewLifecycleOwner) { _, bundle ->
-            val position = bundle.getInt("position")
-            checkBoxViewModel.setCheckboxState(position, true)
+            mAdapter?.updateCheckboxStates(checkboxStates)
         }
     }
 
