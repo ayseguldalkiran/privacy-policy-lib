@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.privacy_policy_lib.adapter.ContractsAdapter
@@ -27,7 +26,6 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     private var _binding: FragmentContractsBinding? = null
     private val binding get() = _binding!!
     private var mAdapter: ContractsAdapter? = null
-    private val checkBoxViewModel: CheckBoxViewModel by activityViewModels()
     private var privacyPolicyFile: String? = null
     var contractItemList = arrayListOf(ContractItem())
     var onPrivacyPolicyAccepted: (() -> Unit)? = null
@@ -104,11 +102,11 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
             val position = bundle.getInt(POSITION)
             val isApproved = bundle.getBoolean(IS_APPROVED)
             checkboxStates[position] = isApproved
+            mAdapter?.updateCheckboxStates(checkboxStates)
             binding.btnRead.setBackgroundColor(
                 if (checkboxStates.all { it }) resources.getColor(R.color.colorPrimary)
                 else resources.getColor(R.color.colorDisabled)
             )
-            mAdapter?.updateCheckboxStates(checkboxStates)
         }
     }
 

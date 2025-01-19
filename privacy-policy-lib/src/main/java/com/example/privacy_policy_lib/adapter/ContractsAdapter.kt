@@ -44,10 +44,11 @@ class ContractsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val contractItem = contractsList[position]
-        holder.bind(contractItem) {  ->
+        holder.chkBoxContract.isChecked = checkboxStates[position]
+        holder.chkBoxContract.isClickable = false
+        holder.bind(contractItem) {
             onContractClicked(position)
         }
-        holder.chkBoxContract.isChecked = checkboxStates[position]
     }
 
     fun addItem(items: ArrayList<ContractItem>?) {
@@ -60,8 +61,12 @@ class ContractsAdapter(
     }
 
     fun updateCheckboxStates(states: BooleanArray) {
-        checkboxStates = states.copyOf()
-        notifyDataSetChanged()
+        for (i in states.indices) {
+            if (checkboxStates[i] != states[i]) {
+                checkboxStates[i] = states[i]
+                notifyItemChanged(i)
+            }
+        }
     }
 
     inner class ViewHolder(binding: ContractItemBinding) : RecyclerView.ViewHolder(binding.root) {
