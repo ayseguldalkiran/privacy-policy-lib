@@ -144,7 +144,6 @@ class PrivacyPolicyDialogFragment : Fragment() {
         }
     }
 
-
     private fun updateEndDateList(agreementType: AgreementTypes, endDate: String) {
         val existingIndex = PrivacyPolicyState.params.endDateList.indexOfFirst { it.first == agreementType }
         if (existingIndex != -1) {

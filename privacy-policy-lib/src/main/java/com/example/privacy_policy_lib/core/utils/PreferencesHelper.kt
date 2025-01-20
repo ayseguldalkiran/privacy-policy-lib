@@ -32,26 +32,4 @@ object PreferencesHelper {
             Log.e(TAG, "setPreferences: ", e)
         }
     }
-
-    private fun getPreferences(prefName: String): String? {
-        var prefValue: String? = ""
-        try {
-            prefValue = mSharedPreferences!!.getString(prefName, "")
-        } catch (e: java.lang.Exception) {
-            Log.e(TAG, "getPreferences: ", e)
-        } finally {
-            return prefValue
-        }
-    }
-
-    @JvmStatic
-    fun isPrivacyPolicyRead(): Boolean {
-        var isRead = false
-        try {
-            isRead = getPreferences(IS_PRIVACY_POLICY_READ) == "1"
-        } catch (e: java.lang.Exception) {
-            Log.e(TAG, "isPrivacyPolicyRead: ", e)
-        }
-        return isRead
-    }
 }

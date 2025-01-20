@@ -10,11 +10,6 @@ enum class AgreementTypes(@JvmField var value: Int, @field:StringRes @param:Stri
     TERMSOFUSE(2, R.string.str_terms_of_use);
 
     companion object {
-        fun fromValue(value: Int): AgreementTypes {
-            return values().find { it.value == value }
-                ?: throw IllegalArgumentException("Invalid value for AgreementTypes: $value")
-        }
-
         fun getStringForEnum(type: AgreementTypes, context: Context): String {
             if (type.resId != -1) {
                 return context.getString(type.resId)
