@@ -16,7 +16,6 @@ import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.IS_APPROVED
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.POSITION
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PRIVACY_POLICY
 import com.example.privacy_policy_lib.core.utils.ContextUtils
-import com.example.privacy_policy_lib.core.utils.IntentExtraName
 import com.example.privacy_policy_lib.databinding.FragmentContractsBinding
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -26,7 +25,6 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
     private var _binding: FragmentContractsBinding? = null
     private val binding get() = _binding!!
     private var mAdapter: ContractsAdapter? = null
-    private var privacyPolicyFile: String? = null
     var contractItemList = arrayListOf(ContractItem())
     var onPrivacyPolicyAccepted: (() -> Unit)? = null
     private lateinit var checkboxStates: BooleanArray
@@ -35,7 +33,6 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
         super.onCreate(savedInstanceState)
 
         arguments?.let { args ->
-            privacyPolicyFile = args.getString(IntentExtraName.ARG_FILE)
             val params = args.getParcelable<PrivacyPolicyLibParams>("params")
 
             contractItemList = if (params != null) {
@@ -64,7 +61,7 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
         context?.let { ContextUtils.setmContext(it) }
         mAdapter = ContractsAdapter(requireActivity()).apply {
             onContractClicked = { position ->
-                val fragment = PrivacyPolicyDialogFragment.newInstance(privacyPolicyFile!!, position)
+                val fragment = PrivacyPolicyDialogFragment.newInstance(position)
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .addToBackStack(null)

@@ -41,13 +41,9 @@ class PrivacyPolicyDialogFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(
-            privacyPolicyFile: String,
-            position: Int
-        ): PrivacyPolicyDialogFragment {
+        fun newInstance(position: Int): PrivacyPolicyDialogFragment {
             return PrivacyPolicyDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putString(IntentExtraName.ARG_FILE, privacyPolicyFile)
                     putInt(IntentExtraName.ARG_POSITION, position)
                 }
             }
@@ -57,7 +53,6 @@ class PrivacyPolicyDialogFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            mPrivacyPolicyFile = it.getString(IntentExtraName.ARG_FILE)
             checkboxPosition = it.getInt(IntentExtraName.ARG_POSITION)
         }
         context?.let { ContextUtils.setmContext(it) }

@@ -12,7 +12,6 @@ import com.example.privacy_policy_lib.core.model.ContractItem
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyState.PARAMS_TO_GET_FROM_APP
-import com.example.privacy_policy_lib.core.utils.IntentExtraName
 
 class PrivacyPolicyMainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,15 +50,8 @@ class PrivacyPolicyMainActivity : AppCompatActivity() {
             )
         }
 
-        val privacyPolicyFile = "privacy_policy.html"
-
-        val bundle = Bundle().apply {
-            putString(IntentExtraName.ARG_FILE, privacyPolicyFile)
-        }
-
         val fragment = ContractsFragment()
         fragment.contractItemList = contractItemList
-        fragment.arguments = bundle
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
