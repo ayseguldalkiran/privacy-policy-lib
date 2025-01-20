@@ -87,6 +87,7 @@ object PrivacyPolicyState {
             userName = "LN1",
             password = "1"
     )*/
+    @JvmStatic
     var params: PrivacyPolicyLibParams = PrivacyPolicyLibParams()
     const val PARAMS_TO_GET_FROM_APP = "privacyPolicyParamsFromApp"
     const val PRIVACY_POLICY = "privacy_policy"
