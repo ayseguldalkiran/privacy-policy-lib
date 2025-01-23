@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.converter.simplexml)
+    implementation 'com.squareup.retrofit2:converter-simplexml:2.9.0'
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
@@ -67,7 +67,7 @@ publishing {
         maven(MavenPublication) {
             groupId "com.github.ayseguldalkiran"
             artifactId "privacy-policy-lib"
-            version "32.0"
+            version "33.0"
             afterEvaluate {
                 from components.release
             }
