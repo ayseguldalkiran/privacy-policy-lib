@@ -1,7 +1,8 @@
 package com.example.privacy_policy_lib
 
 import android.os.Bundle
-import com.example.privacy_policy_lib.core.PrivacyPolicyManager
+
+import com.example.privacy_policy_lib.core.model.GetCurrentApprovedAgreementContentHashByTokenResponse
 import com.example.privacy_policy_lib.core.model.PrivacyPolicyLibParams
 
 object PrivacyPolicyBuilder {
@@ -18,11 +19,10 @@ object PrivacyPolicyBuilder {
         }
     }
 
-    @JvmStatic
-    fun getCurrentApprovedAgreementContent(
+    suspend fun getCurrentApprovedAgreementContent(
         isProduction: Boolean,
         agreementToken: String
-    ) {
-        PrivacyPolicyManager.getCurrentApprovedAgreementContentHashByToken(isProduction, agreementToken)
+    ): Result<GetCurrentApprovedAgreementContentHashByTokenResponse?> {
+        return PrivacyPolicyManager.getCurrentApprovedAgreementContentHashByToken(isProduction, agreementToken)
     }
 } 

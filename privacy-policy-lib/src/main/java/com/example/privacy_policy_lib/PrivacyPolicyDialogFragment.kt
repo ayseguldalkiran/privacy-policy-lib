@@ -133,14 +133,6 @@ class PrivacyPolicyDialogFragment : Fragment() {
             parentFragmentManager.setFragmentResult(PRIVACY_POLICY, result)
             parentFragmentManager.popBackStack()
         }
-
-        viewModel.approvedAgreementContentResponse.observe(viewLifecycleOwner) { response ->
-            response?.let {
-                val endDate = it.body?.contentResponse?.result?.endDate ?: ""
-                val agreementType = PrivacyPolicyState.params.agreementTypes[checkboxPosition]
-                updateEndDateList(agreementType, endDate)
-            }
-        }
     }
 
     private fun updateContentHashList(agreementType: AgreementTypes) {

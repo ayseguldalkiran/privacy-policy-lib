@@ -7,6 +7,7 @@ import com.example.privacy_policy_lib.core.model.GetAgreementContentResponse
 import com.example.privacy_policy_lib.core.model.GetCurrentApprovedAgreementContentHashByTokenRequest
 import com.example.privacy_policy_lib.core.model.GetCurrentApprovedAgreementContentHashByTokenResponse
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -36,9 +37,9 @@ interface AgreementServiceApi {
 
     @Headers("Content-Type: text/xml; charset=utf-8")
     @POST(REQUEST_URL)
-    fun getCurrentApprovedAgreementContentHashByToken(
+    suspend fun getCurrentApprovedAgreementContentHashByToken(
         @Header("SOAPAction") soapAction: String,
         @Body envelope: GetCurrentApprovedAgreementContentHashByTokenRequest
-    ): Call<GetCurrentApprovedAgreementContentHashByTokenResponse>
+    ): Response<GetCurrentApprovedAgreementContentHashByTokenResponse>
 
 }

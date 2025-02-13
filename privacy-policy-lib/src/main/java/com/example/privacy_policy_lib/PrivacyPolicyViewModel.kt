@@ -23,9 +23,6 @@ class PrivacyPolicyViewModel : ViewModel() {
     private val _approvalResult = MutableLiveData<ApproveAgreementResponse?>()
     val approvalResult: LiveData<ApproveAgreementResponse?> get() = _approvalResult
 
-    private val _approvedAgreementContentResponse = MutableLiveData<GetCurrentApprovedAgreementContentHashByTokenResponse?>()
-    val approvedAgreementContentResponse : LiveData<GetCurrentApprovedAgreementContentHashByTokenResponse?> get() = _approvedAgreementContentResponse
-
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> get() = _error
 
@@ -75,21 +72,15 @@ class PrivacyPolicyViewModel : ViewModel() {
         )
     }
 
-    fun getCurrentApprovedAgreementContentHashByToken(
+    suspend fun getCurrentApprovedAgreementContentHashByToken(
         isProduction: Boolean,
         request: GetCurrentApprovedAgreementContentHashByTokenRequest
-    ) {
+    ): Result<GetCurrentApprovedAgreementContentHashByTokenResponse?> {
         _isLoading.postValue(true)
 
-        agreementService.callGetCurrentApprovedAgreementContentHashByToken(
+        return agreementService.getCurrentApprovedAgreementContentHashByToken(
             isProduction = isProduction,
             request = request,
-            onSuccess = { response ->
-                handleApprovedAgreementSuccess(response)
-            },
-            onFailure = { error ->
-                handleError(error)
-            }
         )
     }
 
@@ -108,11 +99,6 @@ class PrivacyPolicyViewModel : ViewModel() {
     private fun handleApprovalSuccess(response: ApproveAgreementResponse?) {
         _isLoading.postValue(false)
         _approvalResult.postValue(response)
-    }
-
-    private fun handleApprovedAgreementSuccess(response: GetCurrentApprovedAgreementContentHashByTokenResponse?) {
-        _isLoading.postValue(false)
-        _approvedAgreementContentResponse.postValue(response)
     }
 
     private fun handleError(throwable: Throwable) {

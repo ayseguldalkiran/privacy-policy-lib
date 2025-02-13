@@ -14,6 +14,8 @@ import com.example.privacy_policy_lib.core.model.PrivacyPolicyState
 import com.example.privacy_policy_lib.core.utils.RetrofitServiceFactory.APPROVE_AGREEMENT_CONTENT
 import com.example.privacy_policy_lib.core.utils.RetrofitServiceFactory.GET_AGREEMENT_CONTENT
 import com.example.privacy_policy_lib.core.utils.RetrofitServiceFactory.GET_CURRENT_APPROVED_AGREEMENT_CONTENT_HASH_BY_TOKEN
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -85,32 +87,26 @@ class AgreementService {
         })
     }
 
-    fun callGetCurrentApprovedAgreementContentHashByToken(
+    suspend fun getCurrentApprovedAgreementContentHashByToken(
         isProduction: Boolean,
-        request: GetCurrentApprovedAgreementContentHashByTokenRequest,
-        onSuccess: (GetCurrentApprovedAgreementContentHashByTokenResponse?) -> Unit,
-        onFailure: (Throwable) -> Unit
-    ) {
-        val api = RetrofitServiceFactory.createRetrofit(isProduction)
+        request: GetCurrentApprovedAgreementContentHashByTokenRequest
+    ): Result<GetCurrentApprovedAgreementContentHashByTokenResponse?> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val api = RetrofitServiceFactory.createRetrofit(isProduction)
+                val soapAction = RetrofitServiceFactory.getSoapAction(isProduction, GET_CURRENT_APPROVED_AGREEMENT_CONTENT_HASH_BY_TOKEN)
 
-        val soapAction = RetrofitServiceFactory.getSoapAction(isProduction, GET_CURRENT_APPROVED_AGREEMENT_CONTENT_HASH_BY_TOKEN)
+                val response = api.getCurrentApprovedAgreementContentHashByToken(soapAction, request)
 
-        api.getCurrentApprovedAgreementContentHashByToken(soapAction, request).enqueue(object : Callback<GetCurrentApprovedAgreementContentHashByTokenResponse> {
-            override fun onResponse(
-                call: Call<GetCurrentApprovedAgreementContentHashByTokenResponse>,
-                response: Response<GetCurrentApprovedAgreementContentHashByTokenResponse>
-            ) {
                 if (response.isSuccessful) {
-                    onSuccess(response.body())
+                    Result.success(response.body())
                 } else {
-                    onFailure(Exception("Error: ${response.errorBody()?.string()}"))
+                    Result.failure(Exception("Error: ${response.errorBody()?.string()}"))
                 }
+            } catch (e: Exception) {
+                Result.failure(e)
             }
-
-            override fun onFailure(call: Call<GetCurrentApprovedAgreementContentHashByTokenResponse>, t: Throwable) {
-                onFailure(t)
-            }
-        })
+        }
     }
 
 }
