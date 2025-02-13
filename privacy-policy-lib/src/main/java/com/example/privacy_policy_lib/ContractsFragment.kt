@@ -37,15 +37,8 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
 
             contractItemList = if (params != null) {
                 PrivacyPolicyState.params = params
-                ArrayList(params.agreementTypes.filter { agreement ->
-                    val currentDateTime = LocalDateTime.now()
-                    params.agreementTokenList.none { it.first == agreement } ||
-                            params.endDateList.any {
-                                val endDateTime = LocalDateTime.parse(it.second, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                                currentDateTime.isAfter(endDateTime)
-                            }
-                }.map { filteredAgreement ->
-                    ContractItem(AgreementTypes.getStringForEnum(filteredAgreement, requireContext()))
+                ArrayList(params.agreementTypes.map { agreement ->
+                    ContractItem(AgreementTypes.getStringForEnum(agreement, requireContext()))
                 })
             } else {
                 val defaultAgreements = arrayListOf(
