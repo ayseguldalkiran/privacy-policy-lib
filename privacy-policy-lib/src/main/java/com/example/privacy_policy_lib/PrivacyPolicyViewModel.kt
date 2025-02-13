@@ -10,6 +10,8 @@ import com.example.privacy_policy_lib.core.model.GetAgreementContentResponse
 import com.example.privacy_policy_lib.core.model.ApproveAgreementEnvelope
 import com.example.privacy_policy_lib.core.model.ApproveAgreementRequest
 import com.example.privacy_policy_lib.core.model.ApproveAgreementResponse
+import com.example.privacy_policy_lib.core.model.GetCurrentApprovedAgreementContentHashByTokenRequest
+import com.example.privacy_policy_lib.core.model.GetCurrentApprovedAgreementContentHashByTokenResponse
 
 class PrivacyPolicyViewModel : ViewModel() {
 
@@ -20,6 +22,9 @@ class PrivacyPolicyViewModel : ViewModel() {
 
     private val _approvalResult = MutableLiveData<ApproveAgreementResponse?>()
     val approvalResult: LiveData<ApproveAgreementResponse?> get() = _approvalResult
+
+    private val _approvedAgreementContentResponse = MutableLiveData<GetCurrentApprovedAgreementContentHashByTokenResponse?>()
+    val approvedAgreementContentResponse : LiveData<GetCurrentApprovedAgreementContentHashByTokenResponse?> get() = _approvedAgreementContentResponse
 
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> get() = _error
@@ -70,6 +75,24 @@ class PrivacyPolicyViewModel : ViewModel() {
         )
     }
 
+    fun getCurrentApprovedAgreementContentHashByToken(
+        isProduction: Boolean,
+        request: GetCurrentApprovedAgreementContentHashByTokenRequest
+    ) {
+        _isLoading.postValue(true)
+
+        agreementService.callGetCurrentApprovedAgreementContentHashByToken(
+            isProduction = isProduction,
+            request = request,
+            onSuccess = { response ->
+                handleApprovedAgreementSuccess(response)
+            },
+            onFailure = { error ->
+                handleError(error)
+            }
+        )
+    }
+
     private fun handleSuccess(response: GetAgreementContentResponse?) {
         _isLoading.postValue(false)
         response?.let {
@@ -85,6 +108,11 @@ class PrivacyPolicyViewModel : ViewModel() {
     private fun handleApprovalSuccess(response: ApproveAgreementResponse?) {
         _isLoading.postValue(false)
         _approvalResult.postValue(response)
+    }
+
+    private fun handleApprovedAgreementSuccess(response: GetCurrentApprovedAgreementContentHashByTokenResponse?) {
+        _isLoading.postValue(false)
+        _approvedAgreementContentResponse.postValue(response)
     }
 
     private fun handleError(throwable: Throwable) {

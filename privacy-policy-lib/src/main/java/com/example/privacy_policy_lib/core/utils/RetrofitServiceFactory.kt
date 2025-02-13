@@ -63,4 +63,5 @@ object RetrofitServiceFactory {
     const val NAMESPACE_END = "LogoLicenseService/AgreementService"
     const val GET_AGREEMENT_CONTENT = "GetAgreementContent"
     const val APPROVE_AGREEMENT_CONTENT = "ApproveAgreementContent"
+    const val GET_CURRENT_APPROVED_AGREEMENT_CONTENT_HASH_BY_TOKEN = "GetCurrentApprovedAgreementContentHashByToken"
 }
