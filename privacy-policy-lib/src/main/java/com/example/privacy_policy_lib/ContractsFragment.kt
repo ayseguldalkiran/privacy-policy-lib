@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,14 +73,27 @@ class ContractsFragment: Fragment(), ContractsAdapter.OnAllCheckboxCheckedListen
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Geri tuşuna basıldığında hiçbir şey yapma (geri çıkışı engelle)
+            }
+        })
+    }
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val recyclerView = requireView().findViewById<RecyclerView>(R.id.rcw)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = mAdapter
         binding.btnRead.setOnClickListener {
-            onPrivacyPolicyAccepted?.invoke()
-            parentFragmentManager.popBackStack()
+            if (checkboxStates.all { it }) {
+                onPrivacyPolicyAccepted?.invoke()
+                parentFragmentManager.popBackStack()
+            }
         }
         checkboxStates = BooleanArray(contractItemList.size) { false }
         binding.btnRead.setBackgroundColor(

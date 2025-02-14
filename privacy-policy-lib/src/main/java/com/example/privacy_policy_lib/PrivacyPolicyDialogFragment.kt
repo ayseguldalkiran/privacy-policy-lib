@@ -15,6 +15,7 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.webkit.WebViewAssetLoader
@@ -70,6 +71,11 @@ class PrivacyPolicyDialogFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         loadPrivacyPolicy()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Geri tuşuna basıldığında hiçbir şey yapma (geri çıkışı engelle)
+            }
+        })
     }
 
     override fun onStart() {
