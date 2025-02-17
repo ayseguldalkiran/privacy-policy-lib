@@ -33,6 +33,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
         }
     }
     buildFeatures {
@@ -71,7 +72,7 @@ publishing {
         maven(MavenPublication) {
             groupId "com.github.ayseguldalkiran"
             artifactId "privacy-policy-lib"
-            version "39.0"
+            version "40.0"
             afterEvaluate {
                 from components.release
             }

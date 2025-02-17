@@ -19,3 +19,14 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Kütüphaneyi koruma kuralları
+-keep class com.example.privacy_policy_lib.** { *; }
+-keep class javax.xml.stream.** { *; }
+-keep class org.simpleframework.xml.** { *; }
+-keep class retrofit2.converter.simplexml.** { *; }
+
+# Gson ve Retrofit koruma kuralları
+-keepattributes Signature
+-keep class * implements java.io.Serializable { *; }
+-keep class com.google.gson.** { *; }
