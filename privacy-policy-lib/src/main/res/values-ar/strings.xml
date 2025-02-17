@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_ok">موافق</string>
+    <string name="str_please_wait">يرجى الانتظار...</string>
+    <string name="str_contracts_explanation">خصوصيتك وحقوقك مهمة بالنسبة لنا. قبل استخدام خدماتنا، يرجى قراءة جميع الاتفاقيات بعناية والموافقة عليها. بقراءتك وموافقتك على الاتفاقيات، يمكنك البدء في استخدام خدماتنا بأمان.</string>
+    <string name="str_approve">لقد قرأت وأوافق</string>
+    <string name="str_approve_text">الموافقة على الاتفاقيات</string>
+    <string name="str_privacy_policy">سياسة الخصوصية</string>
+    <string name="str_general_agreement">نص التوضيح</string>
+    <string name="str_terms_of_use">شروط الاستخدام</string>
+</resources>

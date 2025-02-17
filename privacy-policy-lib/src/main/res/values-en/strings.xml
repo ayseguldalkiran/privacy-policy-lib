@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_ok">OK</string>
+    <string name="str_please_wait">Please wait...</string>
+    <string name="str_contracts_explanation">Your privacy and rights are important to us. Before using our services, please carefully read and accept all agreements. By reading and accepting the agreements, you can start using our services safely.</string>
+    <string name="str_approve">I have read and approve</string>
+    <string name="str_approve_text">Approval for Agreements</string>
+    <string name="str_privacy_policy">Privacy Policy</string>
+    <string name="str_general_agreement">Clarification Text</string>
+    <string name="str_terms_of_use">Terms of Use</string>
+</resources>

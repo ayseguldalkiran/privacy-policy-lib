@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_ok">Хорошо</string>
+    <string name="str_please_wait">Пожалуйста, подождите...</string>
+    <string name="str_contracts_explanation">Ваша конфиденциальность и права важны для нас. Перед использованием наших услуг, пожалуйста, внимательно прочитайте и примите все соглашения. Приняв соглашения, вы можете безопасно начать пользоваться нашими услугами.</string>
+    <string name="str_approve">Я прочитал(а) и принимаю</string>
+    <string name="str_approve_text">Подтверждение соглашений</string>
+    <string name="str_privacy_policy">Политика конфиденциальности</string>
+    <string name="str_general_agreement">Информационное соглашение</string>
+    <string name="str_terms_of_use">Условия использования</string>
+</resources>

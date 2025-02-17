@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_ok">Tamam</string>
+    <string name="str_please_wait">Zəhmət olmasa gözləyin...</string>
+    <string name="str_contracts_explanation">Məxfiliyiniz və hüquqlarınız bizim üçün önəmlidir. Xidmətlərimizdən istifadə etməzdən əvvəl, bütün müqavilələri diqqətlə oxuyun və təsdiq edin. Müqavilələri oxuyub təsdiq etməklə, xidmətlərimizdən təhlükəsiz istifadə etməyə başlaya bilərsiniz.</string>
+    <string name="str_approve">Oxudum və təsdiq edirəm</string>
+    <string name="str_approve_text">Müqavilələr üçün təsdiq</string>
+    <string name="str_privacy_policy">Məxfilik Siyasəti</string>
+    <string name="str_general_agreement">Məlumatlandırma Mətni</string>
+    <string name="str_terms_of_use">İstifadə Şərtləri</string>
+</resources>

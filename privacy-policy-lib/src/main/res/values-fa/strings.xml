@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_ok">تأیید</string>
+    <string name="str_please_wait">لطفاً منتظر بمانید...</string>
+    <string name="str_contracts_explanation">حریم خصوصی و حقوق شما برای ما مهم است. لطفاً قبل از استفاده از خدمات ما، تمام قراردادها را با دقت بخوانید و تأیید کنید. با خواندن و تأیید قراردادها، می‌توانید با اطمینان از خدمات ما استفاده کنید.</string>
+    <string name="str_approve">خواندم و تأیید می‌کنم</string>
+    <string name="str_approve_text">تأیید قراردادها</string>
+    <string name="str_privacy_policy">سیاست حفظ حریم خصوصی</string>
+    <string name="str_general_agreement">متن اطلاع‌رسانی</string>
+    <string name="str_terms_of_use">شرایط استفاده</string>
+</resources>
