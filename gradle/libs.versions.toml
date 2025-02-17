@@ -15,6 +15,8 @@ loggingInterceptor = "4.11.0"
 material = "1.12.0"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
+rxandroidVersion = "2.1.1"
+rxjavaVersion = "2.2.21"
 webkit = "1.12.0"
 webkitVersion = "1.12.1"
 
@@ -34,6 +36,8 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+rxjava2-rxandroid = { module = "io.reactivex.rxjava2:rxandroid", version.ref = "rxandroidVersion" }
+rxjava2-rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjavaVersion" }
 webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkitVersion" }
 
 [plugins]

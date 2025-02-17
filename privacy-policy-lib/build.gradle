@@ -65,6 +65,8 @@ dependencies {
     implementation libs.androidx.fragment.ktx
     implementation libs.retrofit
     implementation libs.logging.interceptor
+    implementation libs.rxjava2.rxjava
+    implementation libs.rxjava2.rxandroid
 }
 
 publishing {
