@@ -69,17 +69,33 @@ dependencies {
     implementation libs.rxjava2.rxandroid
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId "com.github.ayseguldalkiran"
-            artifactId "privacy-policy-lib"
-            version "42.0"
-            afterEvaluate {
+afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId "com.logo.androidlibs"
+                artifactId "privacy-policy-lib"
+                version "45.0"
                 from components.release
+                pom {
+                    description = 'privacy-policy-lib'
+                }
             }
-            pom {
-                description = 'privacy-policy-lib'
+        }
+
+        def props = new Properties()
+        props.load(new FileInputStream(rootProject.file("local.properties")))
+        def nexusUsername = props.getProperty("nexusUsername") ? new String(Base64.decoder.decode(props.getProperty("nexusUsername"))) : ""
+        def nexusPassword = props.getProperty("nexusPassword") ? new String(Base64.decoder.decode(props.getProperty("nexusPassword"))) : ""
+
+        repositories {
+            maven {
+                name = "nexus"
+                url = uri("https://sonarnexus.logo.com.tr:8443/repository/android-packages")
+                credentials {
+                    username = nexusUsername
+                    password = nexusPassword
+                }
             }
         }
     }
