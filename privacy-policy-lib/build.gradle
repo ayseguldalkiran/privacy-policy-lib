@@ -75,7 +75,7 @@ afterEvaluate {
             maven(MavenPublication) {
                 groupId "com.logo.androidlibs"
                 artifactId "privacy-policy-lib"
-                version "45.0"
+                version "46.0"
                 from components.release
                 pom {
                     description = 'privacy-policy-lib'
